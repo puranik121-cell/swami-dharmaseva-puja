@@ -40,7 +40,7 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
   
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
 import {
-  getFirestore,
+  initializeFirestore,
   collection,
   addDoc
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
@@ -55,7 +55,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true
+});
   
 const services=[["वरदाशंकर पूजा","🪔"],["सत्यनारायण पूजा","कलश"],["रुद्राभिषेक","🔱"],["वास्तुशांती","🏠"],["गृहप्रवेश","🚪"],["विवाह विधी","💐"],["ग्रहशांती","🙏"],["इतर धार्मिक विधी","ॐ"]];
 const translations={mr:{tagline:"पूजा सेवा • बुकिंग • ग्राहक व्यवस्थापन",welcome:"श्रद्धा, सेवा आणि शास्त्रोक्त विधी",intro:"आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.",services:"पूजा सेवा",booking:"बुकिंग करा",customers:"ग्राहक नोंदी",guruji:"गुरुजी नोंदणी",admin:"ॲडमिन",servTitle:"आमच्या पूजा सेवा",bookTitle:"पूजा बुकिंग विनंती",name:"ग्राहकाचे नाव *",phone:"मोबाईल नंबर *",service:"पूजा / विधी *",date:"पूजेची तारीख *",time:"वेळ (ऐच्छिक)",city:"शहर / गाव *",address:"पूर्ण पत्ता",notes:"अतिरिक्त माहिती",submit:"बुकिंग विनंती पाठवा",sent:"बुकिंग विनंती नोंदवली. गुरुजी आपल्याशी संपर्क साधतील.",customerTitle:"ग्राहक आणि बुकिंग नोंदी"},
