@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="mr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>स्वामी धर्मसेवा पूजा</title>
+<style>
+:root{--green:#123c2e;--green2:#1d5b43;--gold:#d9ad55;--cream:#fffaf0;--ink:#24332d;--muted:#6d7b73;--line:#e8e1d3}
+*{box-sizing:border-box}body{margin:0;background:#f5f3ed;color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif}
+header{background:linear-gradient(120deg,#0d3025,#1c6045);color:white;padding:20px max(18px,calc((100% - 1120px)/2));display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:50%;background:var(--gold);color:#183c2d;display:grid;place-items:center;font-size:26px;font-weight:800}.brand h1{font-size:20px;margin:0}.brand p{margin:3px 0 0;color:#e9dfc8;font-size:12px}
+select,input,textarea,button{font:inherit}select{border:1px solid #d6c69f;border-radius:10px;padding:9px;background:white;color:var(--ink)}
+main{max-width:1120px;margin:24px auto;padding:0 16px}.hero{background:linear-gradient(120deg,#fff8e7,#f0e3c6);border:1px solid #e6d6b3;border-radius:20px;padding:26px;display:flex;justify-content:space-between;gap:20px;align-items:center}.hero h2{font-size:clamp(23px,4vw,34px);margin:0 0 8px;color:var(--green)}.hero p{margin:0;color:#58675e;line-height:1.6}.hero .om{font-size:68px;color:#b88a35}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.tab{border:1px solid var(--line);background:white;color:var(--green);padding:10px 15px;border-radius:999px;cursor:pointer}.tab.active{background:var(--green);color:white;border-color:var(--green)}
+.panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.service,.card,.formbox{background:white;border:1px solid var(--line);border-radius:16px;padding:18px}.service h3{margin:8px 0 5px;color:var(--green);font-size:17px}.service p{margin:0;color:var(--muted);font-size:13px}.symbol{font-size:27px}.section-title{font-size:21px;color:var(--green);margin:24px 0 12px}.formbox{max-width:720px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:13px;color:#53645a;font-weight:650}input,textarea,.field select{width:100%;padding:11px;border:1px solid #d9ded8;border-radius:10px;background:#fff}textarea{min-height:75px;resize:vertical}.primary{background:var(--green);color:white;border:0;border-radius:10px;padding:12px 18px;cursor:pointer;font-weight:700}.secondary{background:#f8f1df;color:#654b18;border:1px solid #e8d7ae;border-radius:10px;padding:10px 14px;cursor:pointer}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:25px;color:var(--green)}.stat span{font-size:13px;color:var(--muted)}table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px}th{background:#f4efdf;color:#5d4a20}.empty{color:var(--muted);padding:20px;text-align:center;background:white;border-radius:12px}.notice{background:#fff5d9;border:1px solid #ead49a;padding:12px;border-radius:12px;font-size:13px;color:#634d1c;margin:14px 0}
+footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:20px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.grid{grid-template-columns:1fr}.hero .om{font-size:48px}.brand h1{font-size:17px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">ॐ</div><div><h1 id="appname">स्वामी धर्मसेवा पूजा</h1><p id="tagline">पूजा सेवा • बुकिंग • ग्राहक व्यवस्थापन</p></div></div>
+<select id="lang" aria-label="Language"><option value="mr">मराठी</option><option value="hi">हिन्दी</option><option value="en">English</option></select></header>
+<main>
+<section class="hero"><div><h2 id="welcome">श्रद्धा, सेवा आणि शास्त्रोक्त विधी</h2><p id="intro">आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.</p></div><div class="om">ॐ</div></section>
+<nav class="tabs">
+<button class="tab active" data-tab="services" id="t-services">पूजा सेवा</button><button class="tab" data-tab="booking" id="t-booking">बुकिंग करा</button><button class="tab" data-tab="customers" id="t-customers">ग्राहक नोंदी</button><button class="tab" data-tab="guruji" id="t-guruji">गुरुजी नोंदणी</button><button class="tab" data-tab="admin" id="t-admin">ॲडमिन</button>
+</nav>
+<section class="panel active" id="services"><h2 class="section-title" id="services-title">आमच्या पूजा सेवा</h2><div class="grid" id="servicegrid"></div><div class="notice" id="contact">संपर्क: 8668909094 • पेमेंट / PhonePe: 9421075047 • बनशंकरी नगर, शेळगी, सोलापूर</div></section>
+<section class="panel" id="booking"><h2 class="section-title" id="booking-title">पूजा बुकिंग विनंती</h2><form class="formbox" id="bookingform"><div class="fields">
+<div class="field"><label id="l-name">ग्राहकाचे नाव *</label><input name="name" required></div><div class="field"><label id="l-phone">मोबाईल नंबर *</label><input name="phone" required inputmode="tel" pattern="[0-9+ -]{10,15}"></div>
+<div class="field"><label id="l-service">पूजा / विधी *</label><select name="service" id="service-select" required></select></div><div class="field"><label id="l-date">पूजेची तारीख *</label><input type="date" name="date" required></div>
+<div class="field"><label id="l-time">वेळ (ऐच्छिक)</label><input name="time" type="time"></div><div class="field"><label id="l-city">शहर / गाव *</label><input name="city" required></div>
+<div class="field full"><label id="l-address">पूर्ण पत्ता</label><textarea name="address"></textarea></div><div class="field full"><label id="l-notes">अतिरिक्त माहिती</label><textarea name="notes"></textarea></div></div><div class="actions"><button class="primary" type="submit" id="submit-booking">बुकिंग विनंती पाठवा</button></div><p id="booking-result" aria-live="polite"></p></form></section>
+<section class="panel" id="customers"><h2 class="section-title" id="customers-title">ग्राहक आणि बुकिंग नोंदी</h2><div class="stats"><div class="stat"><b id="count-all">0</b><span>एकूण बुकिंग</span></div><div class="stat"><b id="count-pending">0</b><span>प्रलंबित</span></div><div class="stat"><b id="count-approved">0</b><span>निश्चित</span></div></div><div style="overflow:auto;margin-top:15px"><table><thead><tr><th>ग्राहक</th><th>सेवा</th><th>तारीख</th><th>मोबाईल</th><th>स्थिती</th></tr></thead><tbody id="bookingrows"></tbody></table></div></section>
+<section class="panel" id="guruji"><h2 class="section-title" id="guruji-title">गुरुजी नोंदणी</h2><form class="formbox" id="guruform"><div class="fields"><div class="field"><label>गुरुजींचे पूर्ण नाव *</label><input name="name" required></div><div class="field"><label>मोबाईल नंबर *</label><input name="phone" required></div><div class="field"><label>शहर / जिल्हा *</label><input name="city" required></div><div class="field"><label>मुख्य सेवा / विशेषता</label><input name="skills"></div><div class="field full"><label>अनुभव व माहिती</label><textarea name="details"></textarea></div></div><div class="actions"><button class="primary" type="submit">नोंदणी विनंती पाठवा</button></div><p id="guru-result" aria-live="polite"></p></form></section>
+<section class="panel" id="admin"><h2 class="section-title">ॲडमिन नियंत्रण</h2><div class="notice">ही प्राथमिक चाचणी आवृत्ती आहे. सध्या नोंदी या ब्राउझरमध्येच साठवल्या जातात. खरे लॉगिन, सुरक्षित ॲडमिन प्रवेश आणि सर्व मोबाईल/कॉम्प्युटरवर एकत्रित डेटा Firebase जोडल्यावर सुरू होईल.</div><div class="card"><h3>गुरुजींच्या नोंदणी विनंत्या</h3><div id="gurulist" class="empty">अद्याप नोंदणी नाही.</div></div><div class="actions"><button class="secondary" id="export">नोंदी CSV मध्ये डाउनलोड करा</button><button class="secondary" id="clear">या ब्राउझरमधील चाचणी नोंदी पुसा</button></div></section>
+</main><footer>॥ धर्मो रक्षति रक्षितः ॥<br>स्वामी धर्मसेवा पूजा</footer>
+<script type="module">
+  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAN0CYMhNOR646embF7DSXO6MMWjk8eD5E",
+  authDomain: "swami-dharmseva-puja-6f91a.firebaseapp.com",
+  projectId: "swami-dharmseva-puja-6f91a",
+  storageBucket: "swami-dharmseva-puja-6f91a.firebasestorage.app",
+  messagingSenderId: "1024221246757",
+  appId: "1:1024221246757:web:c490254791328d0a2156cc"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+  
+const services=[["वरदाशंकर पूजा","🪔"],["सत्यनारायण पूजा","कलश"],["रुद्राभिषेक","🔱"],["वास्तुशांती","🏠"],["गृहप्रवेश","🚪"],["विवाह विधी","💐"],["ग्रहशांती","🙏"],["इतर धार्मिक विधी","ॐ"]];
+const translations={mr:{tagline:"पूजा सेवा • बुकिंग • ग्राहक व्यवस्थापन",welcome:"श्रद्धा, सेवा आणि शास्त्रोक्त विधी",intro:"आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.",services:"पूजा सेवा",booking:"बुकिंग करा",customers:"ग्राहक नोंदी",guruji:"गुरुजी नोंदणी",admin:"ॲडमिन",servTitle:"आमच्या पूजा सेवा",bookTitle:"पूजा बुकिंग विनंती",name:"ग्राहकाचे नाव *",phone:"मोबाईल नंबर *",service:"पूजा / विधी *",date:"पूजेची तारीख *",time:"वेळ (ऐच्छिक)",city:"शहर / गाव *",address:"पूर्ण पत्ता",notes:"अतिरिक्त माहिती",submit:"बुकिंग विनंती पाठवा",sent:"बुकिंग विनंती नोंदवली. गुरुजी आपल्याशी संपर्क साधतील.",customerTitle:"ग्राहक आणि बुकिंग नोंदी"},
+hi:{tagline:"पूजा सेवा • बुकिंग • ग्राहक प्रबंधन",welcome:"श्रद्धा, सेवा और शास्त्रोक्त विधि",intro:"अपनी पूजा सेवा चुनें और बुकिंग अनुरोध भेजें। गुरुजी की उपलब्धता जाँचकर बुकिंग की पुष्टि की जाएगी।",services:"पूजा सेवाएँ",booking:"बुकिंग करें",customers:"ग्राहक रिकॉर्ड",guruji:"गुरुजी पंजीकरण",admin:"एडमिन",servTitle:"हमारी पूजा सेवाएँ",bookTitle:"पूजा बुकिंग अनुरोध",name:"ग्राहक का नाम *",phone:"मोबाइल नंबर *",service:"पूजा / विधि *",date:"पूजा की तारीख *",time:"समय (वैकल्पिक)",city:"शहर / गाँव *",address:"पूरा पता",notes:"अतिरिक्त जानकारी",submit:"बुकिंग अनुरोध भेजें",sent:"बुकिंग अनुरोध दर्ज हुआ। गुरुजी आपसे संपर्क करेंगे।",customerTitle:"ग्राहक और बुकिंग रिकॉर्ड"},
+en:{tagline:"Puja services • Booking • Customer management",welcome:"Faith, service and traditional rituals",intro:"Choose a puja service and send a booking request. The booking will be confirmed after the priest checks availability.",services:"Puja services",booking:"Book a puja",customers:"Customer records",guruji:"Priest registration",admin:"Admin",servTitle:"Our puja services",bookTitle:"Puja booking request",name:"Customer name *",phone:"Mobile number *",service:"Puja / ritual *",date:"Puja date *",time:"Time (optional)",city:"City / village *",address:"Full address",notes:"Additional information",submit:"Send booking request",sent:"Booking request saved. The priest will contact you.",customerTitle:"Customers and bookings"}};
+const $=id=>document.getElementById(id);let bookings=JSON.parse(localStorage.getItem("sd_bookings")||"[]"),gurus=JSON.parse(localStorage.getItem("sd_gurus")||"[]");
+function save(){localStorage.setItem("sd_bookings",JSON.stringify(bookings));localStorage.setItem("sd_gurus",JSON.stringify(gurus));render()}
+function renderServices(){ $("servicegrid").innerHTML=services.map(([s,i])=>`<article class="service"><div class="symbol">${i}</div><h3>${s}</h3><p>शास्त्रोक्त पद्धतीने विधी करण्यासाठी बुकिंग करा.</p></article>`).join("");$("service-select").innerHTML='<option value="">सेवा निवडा</option>'+services.map(([s])=>`<option>${s}</option>`).join("")}
+window.approveBooking=i=>{bookings[i].status="निश्चित";save()};
+function render(){ $("count-all").textContent=bookings.length;$("count-pending").textContent=bookings.filter(b=>b.status==="प्रलंबित").length;$("count-approved").textContent=bookings.filter(b=>b.status==="निश्चित").length;
+$("bookingrows").innerHTML=bookings.length?bookings.map(b=>`<tr><td>${esc(b.name)}</td><td>${esc(b.service)}</td><td>${esc(b.date)}</td><td>${esc(b.phone)}</td><td>${b.status} ${b.status==="प्रलंबित"?`<button class="secondary" onclick="approveBooking(${bookings.indexOf(b)})">निश्चित करा</button>`:""}</td></tr>`).join(""):'<tr><td colspan="5">अद्याप बुकिंग नाही.</td></tr>';
+$("gurulist").innerHTML=gurus.length?gurus.map((g,i)=>`<div style="padding:12px;border-bottom:1px solid #eee"><b>${esc(g.name)}</b> — ${esc(g.city)} • ${esc(g.phone)}<br><small>${esc(g.skills||"")} | स्थिती: ${g.status}</small> <button class="secondary" onclick="approveGuru(${i})">मंजूर करा</button></div>`).join(""):'अद्याप नोंदणी नाही.'}
+function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+window.approveGuru=i=>{gurus[i].status="मंजूर";save()};
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.tab).classList.add("active")}));
+
+
+$("bookingform").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const d = Object.fromEntries(new FormData(e.target));
+
+  try {
+    await addDoc(collection(db, "Bookings"), {
+      ...d,
+      status: "प्रलंबित",
+      created: new Date().toISOString()
+    });
+
+    bookings.unshift({
+      ...d,
+      status: "प्रलंबित"
+    });
+
+    save();
+
+    $("booking-result").textContent =
+      translations[$("lang").value].sent;
+
+    e.target.reset();
+
+  } catch (error) {
+    console.error(error);
+
+    
+$("booking-result").textContent =
+      "Error: " + error.code + " - " + error.message;
+
+  }
+});
+
+
+renderServices();
+render();
+
+</script>
+</body>
+</html>
