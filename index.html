@@ -79,7 +79,7 @@ $("bookingform").addEventListener("submit", async e => {
   const d = Object.fromEntries(new FormData(e.target));
 
   try {
-    await addDoc(collection(db, "Bookings"), {
+    await addDoc(collection(db, "bookings"), {
       ...d,
       status: "प्रलंबित",
       created: new Date().toISOString()
