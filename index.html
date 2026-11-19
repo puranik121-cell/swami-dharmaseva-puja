@@ -76,9 +76,13 @@ window.approveGuru=i=>{gurus[i].status="मंजूर";save()};
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.tab).classList.add("active")}));
 
 
+
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
-$("booking-result").textContent = "बुकिंग प्रक्रिया सुरू झाली...";
+
+  $("booking-result").textContent =
+    "बुकिंग प्रक्रिया सुरू झाली...";
+
   const d = Object.fromEntries(new FormData(e.target));
 
   try {
@@ -95,22 +99,36 @@ $("booking-result").textContent = "बुकिंग प्रक्रिय�
 
     save();
 
+    const message =
+      "🙏 नवीन पूजा बुकिंग विनंती\n\n" +
+      "ग्राहकाचे नाव: " + d.name + "\n" +
+      "मोबाईल: " + d.phone + "\n" +
+      "पूजा: " + d.service + "\n" +
+      "तारीख: " + d.date + "\n" +
+      "वेळ: " + (d.time || "दिलेली नाही") + "\n" +
+      "शहर: " + d.city + "\n" +
+      "पत्ता: " + (d.address || "दिलेला नाही") + "\n" +
+      "अधिक माहिती: " + (d.notes || "नाही");
+
     $("booking-result").textContent =
-      translations[$("lang").value].sent;
+      "बुकिंग Firebase मध्ये सेव्ह झाले. WhatsApp उघडत आहे.";
 
     e.target.reset();
+
+    const whatsappURL =
+      "https://wa.me/918668909094?text=" +
+      encodeURIComponent(message);
+
+    window.location.href = whatsappURL;
 
   } catch (error) {
     console.error(error);
 
-    
-$("booking-result").textContent =
+    $("booking-result").textContent =
       "Error: " + error.code + " - " + error.message;
-
   }
 });
-
-
+  
 renderServices();
 render();
 
