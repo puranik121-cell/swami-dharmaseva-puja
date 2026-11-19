@@ -75,7 +75,7 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{doc
 
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
-
+$("booking-result").textContent = "बुकिंग प्रक्रिया सुरू झाली...";
   const d = Object.fromEntries(new FormData(e.target));
 
   try {
