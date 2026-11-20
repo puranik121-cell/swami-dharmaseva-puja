@@ -34,7 +34,38 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
 <div class="field full"><label id="l-address">पूर्ण पत्ता</label><textarea name="address"></textarea></div><div class="field full"><label id="l-notes">अतिरिक्त माहिती</label><textarea name="notes"></textarea></div></div><div class="actions"><button class="primary" type="submit" id="submit-booking">बुकिंग विनंती पाठवा</button></div><p id="booking-result" aria-live="polite"></p></form></section>
 <section class="panel" id="customers"><h2 class="section-title" id="customers-title">ग्राहक आणि बुकिंग नोंदी</h2><div class="stats"><div class="stat"><b id="count-all">0</b><span>एकूण बुकिंग</span></div><div class="stat"><b id="count-pending">0</b><span>प्रलंबित</span></div><div class="stat"><b id="count-approved">0</b><span>निश्चित</span></div></div><div style="overflow:auto;margin-top:15px"><table><thead><tr><th>ग्राहक</th><th>सेवा</th><th>तारीख</th><th>मोबाईल</th><th>स्थिती</th></tr></thead><tbody id="bookingrows"></tbody></table></div></section>
 <section class="panel" id="guruji"><h2 class="section-title" id="guruji-title">गुरुजी नोंदणी</h2><form class="formbox" id="guruform"><div class="fields"><div class="field"><label>गुरुजींचे पूर्ण नाव *</label><input name="name" required></div><div class="field"><label>मोबाईल नंबर *</label><input name="phone" required></div><div class="field"><label>शहर / जिल्हा *</label><input name="city" required></div><div class="field"><label>मुख्य सेवा / विशेषता</label><input name="skills"></div><div class="field full"><label>अनुभव व माहिती</label><textarea name="details"></textarea></div></div><div class="actions"><button class="primary" type="submit">नोंदणी विनंती पाठवा</button></div><p id="guru-result" aria-live="polite"></p></form></section>
-<section class="panel" id="admin"><h2 class="section-title">ॲडमिन नियंत्रण</h2><div class="notice">ही प्राथमिक चाचणी आवृत्ती आहे. सध्या नोंदी या ब्राउझरमध्येच साठवल्या जातात. खरे लॉगिन, सुरक्षित ॲडमिन प्रवेश आणि सर्व मोबाईल/कॉम्प्युटरवर एकत्रित डेटा Firebase जोडल्यावर सुरू होईल.</div><div class="card"><h3>गुरुजींच्या नोंदणी विनंत्या</h3><div id="gurulist" class="empty">अद्याप नोंदणी नाही.</div></div><div class="actions"><button class="secondary" id="export">नोंदी CSV मध्ये डाउनलोड करा</button><button class="secondary" id="clear">या ब्राउझरमधील चाचणी नोंदी पुसा</button></div></section>
+<section class="panel" id="admin">
+  <h2 class="section-title">ॲडमिन लॉगिन</h2>
+
+  <div class="card">
+    <div class="field">
+      <label>ईमेल</label>
+      <input type="email" id="admin-email" placeholder="तुमचा ईमेल टाका">
+    </div>
+
+    <div class="field" style="margin-top:12px">
+      <label>पासवर्ड</label>
+      <input type="password" id="admin-password" placeholder="तुमचा पासवर्ड टाका">
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="admin-login">लॉगिन करा</button>
+      <button class="secondary" id="admin-logout" style="display:none">लॉगआउट</button>
+    </div>
+
+    <p id="admin-message"></p>
+  </div>
+
+  <div id="admin-data" style="display:none">
+    <h2 class="section-title">ग्राहक बुकिंग नोंदी</h2>
+    <div class="stats">
+      <div class="stat"><b id="admin-count-all">0</b><span>एकूण बुकिंग</span></div>
+      <div class="stat"><b id="admin-count-pending">0</b><span>प्रलंबित</span></div>
+      <div class="stat"><b id="admin-count-approved">0</b><span>निश्चित</span></div>
+    </div>
+    <div id="admin-bookings" style="overflow:auto;margin-top:15px"></div>
+  </div>
+</section>
 </main><footer>॥ धर्मो रक्षति रक्षितः ॥<br>स्वामी धर्मसेवा पूजा</footer>
 <script type="module">
 
@@ -59,7 +90,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyBOw445dVNcnNxEDnk-YuJuogt9sF5yL-w",
   authDomain: "swami-dharmseva-puja.firebaseapp.com",
-  projectId: "swami-dharmseva-puja",
+  projectId: "swami-dharmseva-puja-6f91a",
   storageBucket: "swami-dharmseva-puja.firebasestorage.app",
   messagingSenderId: "797363081850",
   appId: "1:797363081850:web:52ee4a0a5f6c15d0b3e1c3",
@@ -85,6 +116,67 @@ function render(){ $("count-all").textContent=bookings.length;$("count-pending")
 $("bookingrows").innerHTML=bookings.length?bookings.map(b=>`<tr><td>${esc(b.name)}</td><td>${esc(b.service)}</td><td>${esc(b.date)}</td><td>${esc(b.phone)}</td><td>${b.status} ${b.status==="प्रलंबित"?`<button class="secondary" onclick="approveBooking(${bookings.indexOf(b)})">निश्चित करा</button>`:""}</td></tr>`).join(""):'<tr><td colspan="5">अद्याप बुकिंग नाही.</td></tr>';
 $("gurulist").innerHTML=gurus.length?gurus.map((g,i)=>`<div style="padding:12px;border-bottom:1px solid #eee"><b>${esc(g.name)}</b> — ${esc(g.city)} • ${esc(g.phone)}<br><small>${esc(g.skills||"")} | स्थिती: ${g.status}</small> <button class="secondary" onclick="approveGuru(${i})">मंजूर करा</button></div>`).join(""):'अद्याप नोंदणी नाही.'}
 function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function loadAdminBookings() {
+  const box = $("admin-bookings");
+  box.textContent = "बुकिंग लोड होत आहेत...";
+
+  try {
+    const snapshot = await getDocs(collection(db, "bookings"));
+    const data = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    $("admin-count-all").textContent = data.length;
+    $("admin-count-pending").textContent =
+      data.filter(b => b.status === "प्रलंबित").length;
+    $("admin-count-approved").textContent =
+      data.filter(b => b.status === "निश्चित").length;
+
+    if (data.length === 0) {
+      box.textContent = "अद्याप बुकिंग नाही.";
+      return;
+    }
+
+    box.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>नाव</th><th>पूजा</th><th>तारीख</th>
+            <th>मोबाईल</th><th>स्थिती</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(b => `
+            <tr>
+              <td>${esc(b.name)}</td>
+              <td>${esc(b.service)}</td>
+              <td>${esc(b.date)}</td>
+              <td>${esc(b.phone)}</td>
+              <td>
+                ${esc(b.status)}
+                ${b.status === "प्रलंबित" ?
+                  `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+
+    box.querySelectorAll("[data-booking-id]").forEach(button => {
+      button.addEventListener("click", async () => {
+        await updateDoc(doc(db, "bookings", button.dataset.bookingId), {
+          status: "निश्चित"
+        });
+        await loadAdminBookings();
+      });
+    });
+
+  } catch (error) {
+    box.textContent = "बुकिंग दाखवताना त्रुटी: " + error.message;
+  }
+}
 window.approveGuru=i=>{gurus[i].status="मंजूर";save()};
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.tab).classList.add("active")}));
 
@@ -144,7 +236,33 @@ $("bookingform").addEventListener("submit", async e => {
   
 renderServices();
 render();
+$("admin-login").addEventListener("click", async () => {
+  const email = $("admin-email").value.trim();
+  const password = $("admin-password").value;
 
+  $("admin-message").textContent = "लॉगिन सुरू आहे...";
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+
+    $("admin-message").textContent = "लॉगिन यशस्वी झाले!";
+    $("admin-logout").style.display = "inline-block";
+    $("admin-data").style.display = "block";
+
+    await loadAdminBookings();
+
+  } catch (error) {
+    $("admin-message").textContent =
+      "लॉगिन त्रुटी: " + error.message;
+  }
+});
+
+$("admin-logout").addEventListener("click", async () => {
+  await signOut(auth);
+  $("admin-data").style.display = "none";
+  $("admin-logout").style.display = "none";
+  $("admin-message").textContent = "लॉगआउट झाले.";
+});
 </script>
 </body>
 </html>
