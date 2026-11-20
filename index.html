@@ -37,12 +37,22 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
 <section class="panel" id="admin"><h2 class="section-title">ॲडमिन नियंत्रण</h2><div class="notice">ही प्राथमिक चाचणी आवृत्ती आहे. सध्या नोंदी या ब्राउझरमध्येच साठवल्या जातात. खरे लॉगिन, सुरक्षित ॲडमिन प्रवेश आणि सर्व मोबाईल/कॉम्प्युटरवर एकत्रित डेटा Firebase जोडल्यावर सुरू होईल.</div><div class="card"><h3>गुरुजींच्या नोंदणी विनंत्या</h3><div id="gurulist" class="empty">अद्याप नोंदणी नाही.</div></div><div class="actions"><button class="secondary" id="export">नोंदी CSV मध्ये डाउनलोड करा</button><button class="secondary" id="clear">या ब्राउझरमधील चाचणी नोंदी पुसा</button></div></section>
 </main><footer>॥ धर्मो रक्षति रक्षितः ॥<br>स्वामी धर्मसेवा पूजा</footer>
 <script type="module">
-  
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
 import {
   initializeFirestore,
   collection,
-  addDoc
+  addDoc,
+  getDocs,
+  updateDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
 
@@ -57,6 +67,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true
