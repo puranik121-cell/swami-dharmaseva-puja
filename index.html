@@ -112,9 +112,41 @@ const $=id=>document.getElementById(id);let bookings=JSON.parse(localStorage.get
 function save(){localStorage.setItem("sd_bookings",JSON.stringify(bookings));localStorage.setItem("sd_gurus",JSON.stringify(gurus));render()}
 function renderServices(){ $("servicegrid").innerHTML=services.map(([s,i])=>`<article class="service"><div class="symbol">${i}</div><h3>${s}</h3><p>शास्त्रोक्त पद्धतीने विधी करण्यासाठी बुकिंग करा.</p></article>`).join("");$("service-select").innerHTML='<option value="">सेवा निवडा</option>'+services.map(([s])=>`<option>${s}</option>`).join("")}
 window.approveBooking=i=>{bookings[i].status="निश्चित";save()};
-function render(){ $("count-all").textContent=bookings.length;$("count-pending").textContent=bookings.filter(b=>b.status==="प्रलंबित").length;$("count-approved").textContent=bookings.filter(b=>b.status==="निश्चित").length;
-$("bookingrows").innerHTML=bookings.length?bookings.map(b=>`<tr><td>${esc(b.name)}</td><td>${esc(b.service)}</td><td>${esc(b.date)}</td><td>${esc(b.phone)}</td><td>${b.status} ${b.status==="प्रलंबित"?`<button class="secondary" onclick="approveBooking(${bookings.indexOf(b)})">निश्चित करा</button>`:""}</td></tr>`).join(""):'<tr><td colspan="5">अद्याप बुकिंग नाही.</td></tr>';
-$("gurulist").innerHTML=gurus.length?gurus.map((g,i)=>`<div style="padding:12px;border-bottom:1px solid #eee"><b>${esc(g.name)}</b> — ${esc(g.city)} • ${esc(g.phone)}<br><small>${esc(g.skills||"")} | स्थिती: ${g.status}</small> <button class="secondary" onclick="approveGuru(${i})">मंजूर करा</button></div>`).join(""):'अद्याप नोंदणी नाही.'}
+
+function render(){
+  if ($("count-all")) $("count-all").textContent = bookings.length;
+
+  if ($("count-pending"))
+    $("count-pending").textContent =
+      bookings.filter(b => b.status === "प्रलंबित").length;
+
+  if ($("count-approved"))
+    $("count-approved").textContent =
+      bookings.filter(b => b.status === "निश्चित").length;
+
+  if ($("bookingrows")) {
+    $("bookingrows").innerHTML = bookings.length
+      ? bookings.map(b => `
+        <tr>
+          <td>${esc(b.name)}</td>
+          <td>${esc(b.service)}</td>
+          <td>${esc(b.date)}</td>
+          <td>${esc(b.phone)}</td>
+          <td>${esc(b.status)}</td>
+        </tr>
+      `).join("")
+      : '<tr><td colspan="5">अद्याप बुकिंग नाही.</td></tr>';
+  }
+
+  if ($("gurulist")) {
+    $("gurulist").innerHTML = gurus.length
+      ? gurus.map(g => `
+        <div>${esc(g.name)} — ${esc(g.city)} • ${esc(g.phone)}</div>
+      `).join("")
+      : "अद्याप नोंदणी नाही.";
+  }
+}
+  
 function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 async function loadAdminBookings() {
   const box = $("admin-bookings");
