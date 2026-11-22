@@ -361,6 +361,25 @@ await loadAdminBookings();
         }
       });
     });
+   
+box.querySelectorAll("[data-guru-status]").forEach(button => {
+  button.addEventListener("click", async () => {
+    try {
+      const bookingId = button.dataset.guruStatus;
+      const status = button.dataset.status;
+
+      await updateDoc(doc(db, "bookings", bookingId), {
+        guruStatus: status
+      });
+
+      alert("कामाची स्थिती सेव्ह झाली: " + status);
+
+      await loadAdminBookings();
+    } catch (error) {
+      alert("त्रुटी: " + error.message);
+    }
+  });
+});
     
 
   } catch (error) {
