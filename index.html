@@ -229,8 +229,14 @@ async function loadAdminBookings() {
               <td>${esc(b.phone)}</td>
               <td>
               ${esc(b.status)}
+
 ${b.status === "प्रलंबित" ?
   `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
+
+${b.status !== "रद्द" ?
+  `<button class="secondary" data-cancel-booking="${b.id}">
+    रद्द करा
+  </button>` : ""}
 
 ${b.status === "निश्चित" ?
   `<button class="primary" data-customer-whatsapp="${b.id}">
