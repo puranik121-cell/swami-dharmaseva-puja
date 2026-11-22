@@ -197,12 +197,27 @@ async function loadAdminBookings() {
       return;
     }
 
+  
+// मंजूर गुरुजींची यादी मिळवा
+    const guruSnapshot = await getDocs(collection(db, "gurus"));
+
+    const approvedGurus = guruSnapshot.docs
+      .filter(item => item.data().status === "मंजूर")
+      .map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
+
     box.innerHTML = `
       <table>
         <thead>
           <tr>
-            <th>नाव</th><th>पूजा</th><th>तारीख</th>
-            <th>मोबाईल</th><th>स्थिती</th>
+            <th>नाव</th>
+            <th>पूजा</th>
+            <th>तारीख</th>
+            <th>मोबाईल</th>
+            <th>स्थिती</th>
+            <th>गुरुजी निवडा</th>
           </tr>
         </thead>
         <tbody>
@@ -217,21 +232,83 @@ async function loadAdminBookings() {
                 ${b.status === "प्रलंबित" ?
                   `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
               </td>
+              <td>
+                <select data-guru-select="${b.id}"
+                  ${approvedGurus.length === 0 ? "disabled" : ""}>
+                  <option value="">गुरुजी निवडा</option>
+                  ${approvedGurus.map(g => `
+                    <option value="${g.id}"
+                      ${b.assignedGuruId === g.id ? "selected" : ""}>
+                      ${esc(g.name)} - ${esc(g.city)}
+                    </option>
+                  `).join("")}
+                </select>
+                <button class="primary"
+                  data-assign-guru="${b.id}"
+                  ${approvedGurus.length === 0 ? "disabled" : ""}>
+                  गुरुजी नेमा
+                </button>
+                ${b.assignedGuruName ?
+                  `<div>नेमलेले: ${esc(b.assignedGuruName)}</div>` : ""}
+              </td>
             </tr>
           `).join("")}
         </tbody>
       </table>
     `;
 
+    // बुकिंग निश्चित करण्याचे बटण
     box.querySelectorAll("[data-booking-id]").forEach(button => {
       button.addEventListener("click", async () => {
-        await updateDoc(doc(db, "bookings", button.dataset.bookingId), {
-          status: "निश्चित"
-        });
-        await loadAdminBookings();
-        await loadAdminGurus();
+        try {
+          await updateDoc(doc(db, "bookings", button.dataset.bookingId), {
+            status: "निश्चित"
+          });
+
+          await loadAdminBookings();
+          await loadAdminGurus();
+        } catch (error) {
+          alert("त्रुटी: " + error.message);
+        }
       });
     });
+
+    // निवडलेल्या गुरुजींना काम देणे
+    box.querySelectorAll("[data-assign-guru]").forEach(button => {
+      button.addEventListener("click", async () => {
+        try {
+          const bookingId = button.dataset.assignGuru;
+
+          const select = box.querySelector(
+            `[data-guru-select="${bookingId}"]`
+          );
+
+          const selectedGuru = approvedGurus.find(
+            g => g.id === select.value
+          );
+
+          if (!selectedGuru) {
+            alert("कृपया गुरुजी निवडा.");
+            return;
+          }
+
+          await updateDoc(doc(db, "bookings", bookingId), {
+            assignedGuruId: selectedGuru.id,
+            assignedGuruName: selectedGuru.name,
+            assignedGuruPhone: selectedGuru.phone,
+            guruStatus: "काम नेमले"
+          });
+
+          alert("गुरुजींना काम नेमले गेले.");
+
+          await loadAdminBookings();
+
+        } catch (error) {
+          alert("त्रुटी: " + error.message);
+        }
+      });
+    });
+    
 
   } catch (error) {
     box.textContent = "बुकिंग दाखवताना त्रुटी: " + error.message;
