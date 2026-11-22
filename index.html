@@ -246,7 +246,7 @@ ${b.status === "निश्चित" ?
              
 <td>
   <select data-guru-select="${b.id}"
-    ${approvedGurus.length === 0 || b.status === "रद्द" ? "disabled" : ""}
+    ${approvedGurus.length === 0 || b.status === "रद्द" ? "disabled" : ""}>
     <option value="">गुरुजी निवडा</option>
     ${approvedGurus.map(g => `
       <option value="${g.id}"
@@ -257,10 +257,10 @@ ${b.status === "निश्चित" ?
   </select>
 
   <button class="primary"
-    data-assign-guru="${b.id}"
-    ${approvedGurus.length === 0 || b.status === "रद्द" ? "disabled" : ""}
-    गुरुजी नेमा
-  </button>
+  data-assign-guru="${b.id}"
+  ${approvedGurus.length === 0 || b.status === "रद्द" ? "disabled" : ""}>
+  गुरुजी नेमा
+</button>
 
   ${b.assignedGuruName ?
     `<div>नेमलेले: ${esc(b.assignedGuruName)}</div>` : ""}
