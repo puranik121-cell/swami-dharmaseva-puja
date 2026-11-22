@@ -270,7 +270,7 @@ ${b.status === "निश्चित" ?
     ${esc(b.guruStatus || "काम नेमलेले नाही")}
   </div>
 
-  ${b.assignedGuruId ? `
+  ${b.assignedGuruId && b.status !== "रद्द" ? `
     <button class="secondary"
       data-guru-status="${b.id}"
       data-status="काम स्वीकारले">
