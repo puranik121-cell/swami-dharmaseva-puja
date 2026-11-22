@@ -286,6 +286,35 @@ $("bookingform").addEventListener("submit", async e => {
       "Error: " + error.code + " - " + error.message;
   }
 });
+
+$("guruform").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const d = Object.fromEntries(new FormData(e.target));
+
+  $("guru-result").textContent = "नोंदणी विनंती पाठवत आहोत...";
+
+  try {
+    await addDoc(collection(db, "gurus"), {
+      name: d.name.trim(),
+      phone: d.phone.trim(),
+      city: d.city.trim(),
+      skills: d.skills || "",
+      details: d.details || "",
+      status: "प्रलंबित",
+      created: new Date().toISOString()
+    });
+
+    $("guru-result").textContent =
+      "नोंदणी विनंती यशस्वीरीत्या पाठवली. मंजुरीनंतर संपर्क केला जाईल.";
+
+    e.target.reset();
+
+  } catch (error) {
+    $("guru-result").textContent =
+      "त्रुटी: " + error.message;
+  }
+});
   
 renderServices();
 render();
