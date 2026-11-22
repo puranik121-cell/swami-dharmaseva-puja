@@ -85,6 +85,12 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
       <div class="stat"><b id="admin-count-approved">0</b><span>निश्चित</span></div>
     </div>
     <div id="admin-bookings" style="overflow:auto;margin-top:15px"></div>
+  
+<h2 class="section-title">गुरुजी नोंदणी अर्ज</h2>
+<div id="admin-gurus" style="overflow:auto;margin-top:15px">
+  गुरुजींचे अर्ज येथे दिसतील.
+</div>
+    
   </div>
 </section>
 </main><footer>॥ धर्मो रक्षति रक्षितः ॥<br>स्वामी धर्मसेवा पूजा</footer>
@@ -223,6 +229,7 @@ async function loadAdminBookings() {
           status: "निश्चित"
         });
         await loadAdminBookings();
+        await loadAdminGurus();
       });
     });
 
@@ -230,6 +237,63 @@ async function loadAdminBookings() {
     box.textContent = "बुकिंग दाखवताना त्रुटी: " + error.message;
   }
 }
+  
+async function loadAdminGurus() {
+  const box = $("admin-gurus");
+  box.textContent = "गुरुजींचे अर्ज लोड होत आहेत...";
+
+  try {
+    const snapshot = await getDocs(collection(db, "gurus"));
+
+    if (snapshot.empty) {
+      box.textContent = "अद्याप गुरुजींचा अर्ज आलेला नाही.";
+      return;
+    }
+
+    box.innerHTML = snapshot.docs.map(item => {
+      const g = item.data();
+
+      return `
+        <div class="card" style="margin-bottom:12px">
+          <strong>${esc(g.name)}</strong><br>
+          मोबाईल: ${esc(g.phone)}<br>
+          शहर: ${esc(g.city)}<br>
+          सेवा: ${esc(g.skills)}<br>
+          माहिती: ${esc(g.details)}<br>
+          स्थिती: ${esc(g.status)}
+          ${
+            g.status === "प्रलंबित"
+            ? `
+              <div class="actions">
+                <button class="primary" data-guru-id="${item.id}" data-status="मंजूर">मंजूर करा</button>
+                <button class="secondary" data-guru-id="${item.id}" data-status="नामंजूर">नामंजूर करा</button>
+              </div>
+            `
+            : ""
+          }
+        </div>
+      `;
+    }).join("");
+
+    box.querySelectorAll("[data-guru-id]").forEach(button => {
+      button.addEventListener("click", async () => {
+        try {
+          await updateDoc(doc(db, "gurus", button.dataset.guruId), {
+            status: button.dataset.status
+          });
+
+          await loadAdminGurus();
+        } catch (error) {
+          box.textContent = "त्रुटी: " + error.message;
+        }
+      });
+    });
+
+  } catch (error) {
+    box.textContent = "गुरुजींचे अर्ज दाखवताना त्रुटी: " + error.message;
+  }
+}
+  
 window.approveGuru=i=>{gurus[i].status="मंजूर";save()};
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.tab).classList.add("active")}));
 
