@@ -386,6 +386,13 @@ box.querySelectorAll("[data-customer-whatsapp]").forEach(button => {
         try {
           const bookingId = button.dataset.assignGuru;
 
+const assignedBooking = data.find(b => b.id === bookingId);
+
+if (!assignedBooking || assignedBooking.status === "रद्द") {
+  alert("हे बुकिंग रद्द झाले आहे. गुरुजी नेमता येणार नाहीत.");
+  return;
+}
+          
           const select = box.querySelector(
             `[data-guru-select="${bookingId}"]`
           );
