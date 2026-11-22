@@ -228,9 +228,14 @@ async function loadAdminBookings() {
               <td>${esc(b.date)}</td>
               <td>${esc(b.phone)}</td>
               <td>
-                ${esc(b.status)}
-                ${b.status === "प्रलंबित" ?
-                  `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
+              ${esc(b.status)}
+${b.status === "प्रलंबित" ?
+  `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
+
+${b.status === "निश्चित" ?
+  `<button class="primary" data-customer-whatsapp="${b.id}">
+    ग्राहकाला WhatsApp संदेश
+  </button>` : ""}
               </td>
              
 <td>
@@ -295,7 +300,52 @@ async function loadAdminBookings() {
         }
       });
     });
+// ग्राहकाला बुकिंग निश्चित झाल्याचा WhatsApp संदेश
+box.querySelectorAll("[data-customer-whatsapp]").forEach(button => {
+  button.addEventListener("click", () => {
 
+    const booking = data.find(
+      b => b.id === button.dataset.customerWhatsapp
+    );
+
+    if (!booking) {
+      alert("बुकिंगची माहिती मिळाली नाही.");
+      return;
+    }
+
+    let customerPhone = String(booking.phone || "")
+      .replace(/\D/g, "");
+
+    if (customerPhone.length === 10) {
+      customerPhone = "91" + customerPhone;
+    }
+
+    if (!/^91[0-9]{10}$/.test(customerPhone)) {
+      alert("ग्राहकाचा मोबाईल नंबर तपासा.");
+      return;
+    }
+
+    const message = [
+      "नमस्कार 🙏",
+      "",
+      "आपली स्वामी धर्मसेवा पूजा येथे केलेली बुकिंग विनंती निश्चित करण्यात आली आहे.",
+      "",
+      "पूजा: " + (booking.service || ""),
+      "तारीख: " + (booking.date || ""),
+      booking.time ? "वेळ: " + booking.time : "",
+      "",
+      "वेळेत काही बदल आवश्यक असल्यास आपणास फोन किंवा WhatsApp द्वारे कळवण्यात येईल.",
+      "",
+      "धन्यवाद!",
+      "स्वामी धर्मसेवा पूजा, सोलापूर"
+    ].filter(Boolean).join("\n");
+
+    const url = "https://wa.me/" + customerPhone +
+      "?text=" + encodeURIComponent(message);
+
+    window.open(url, "_blank");
+  });
+});
     // निवडलेल्या गुरुजींना काम देणे
     box.querySelectorAll("[data-assign-guru]").forEach(button => {
       button.addEventListener("click", async () => {
