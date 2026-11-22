@@ -299,9 +299,39 @@ async function loadAdminBookings() {
             guruStatus: "काम नेमले"
           });
 
-          alert("गुरुजींना काम नेमले गेले.");
+          const booking = data.find(b => b.id === bookingId);
 
-          await loadAdminBookings();
+let guruPhone = String(selectedGuru.phone || "")
+  .replace(/\D/g, "");
+
+if (guruPhone.length === 10) {
+  guruPhone = "91" + guruPhone;
+}
+
+if (guruPhone.length < 12) {
+  alert("गुरुजींचा मोबाईल नंबर तपासा.");
+  return;
+}
+
+const message =
+  "नमस्कार गुरुजी 🙏\n\n" +
+  "आपल्याला नवीन पूजा काम नेमण्यात आले आहे.\n\n" +
+  "ग्राहकाचे नाव: " + (booking?.name || "") + "\n" +
+  "पूजा: " + (booking?.service || "") + "\n" +
+  "तारीख: " + (booking?.date || "") + "\n" +
+  "ग्राहक मोबाईल: " + (booking?.phone || "") + "\n\n" +
+  "कृपया संपर्क करून कामाची खात्री करा.\n\n" +
+  "स्वामी धर्मसेवा पूजा";
+
+const whatsappUrl =
+  "https://wa.me/" + guruPhone +
+  "?text=" + encodeURIComponent(message);
+
+window.open(whatsappUrl, "_blank");
+
+alert("गुरुजींना काम नेमले गेले.");
+
+await loadAdminBookings();
 
         } catch (error) {
           alert("त्रुटी: " + error.message);
