@@ -396,6 +396,7 @@ $("admin-login").addEventListener("click", async () => {
     $("admin-data").style.display = "block";
 
     await loadAdminBookings();
+    await loadAdminGurus();
 
   } catch (error) {
     $("admin-message").textContent =
