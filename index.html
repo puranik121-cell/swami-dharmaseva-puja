@@ -78,6 +78,17 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
   </div>
 
   <div id="admin-data" style="display:none">
+    <h2 class="section-title">डेटा बॅकअप</h2>
+    <div class="notice">
+      बुकिंग आणि गुरुजींच्या नोंदींच्या JSON फाईल्स मोबाईलमध्ये डाउनलोड करा.
+      या फाईल्स सुरक्षित ठेवा; त्यात ग्राहकांचे मोबाईल नंबर असू शकतात.
+    </div>
+    <div class="actions">
+      <button class="secondary" id="backup-bookings">बुकिंग बॅकअप डाउनलोड</button>
+      <button class="secondary" id="backup-gurus">गुरुजी बॅकअप डाउनलोड</button>
+    </div>
+    <p id="backup-message" aria-live="polite"></p>
+
     <h2 class="section-title">ग्राहक बुकिंग नोंदी</h2>
     <div class="stats">
       <div class="stat"><b id="admin-count-all">0</b><span>एकूण बुकिंग</span></div>
@@ -642,6 +653,70 @@ $("admin-login").addEventListener("click", async () => {
     $("admin-message").textContent =
       "लॉगिन त्रुटी: " + error.message;
   }
+});
+
+// Admin साठी Firestore डेटा JSON बॅकअप डाउनलोड
+async function downloadFirestoreBackup(collectionName, filePrefix, buttonId) {
+  const message = $("backup-message");
+  const button = $(buttonId);
+
+  const allowedAdminIds = [
+    "SF0jGaa9qjcl3y0cUBhpFzu79b52",
+    "eePMp6XlyjgdpUtEcVChuqfK4yF3"
+  ];
+
+  if (!auth.currentUser || !allowedAdminIds.includes(auth.currentUser.uid)) {
+    message.textContent = "बॅकअपसाठी अधिकृत Admin लॉगिन आवश्यक आहे.";
+    return;
+  }
+
+  button.disabled = true;
+  message.textContent = "बॅकअप तयार होत आहे...";
+
+  try {
+    const snapshot = await getDocs(collection(db, collectionName));
+    const records = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    const backup = {
+      collection: collectionName,
+      exportedAt: new Date().toISOString(),
+      recordCount: records.length,
+      records: records
+    };
+
+    const blob = new Blob(
+      [JSON.stringify(backup, null, 2)],
+      { type: "application/json;charset=utf-8" }
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+    link.download = filePrefix + "-" + date + ".json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    message.textContent =
+      records.length + " नोंदींचा बॅकअप डाउनलोड सुरू झाला. Downloads फोल्डर तपासा.";
+  } catch (error) {
+    message.textContent = "बॅकअप करताना त्रुटी: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$("backup-bookings").addEventListener("click", () => {
+  downloadFirestoreBackup("bookings", "swami-bookings-backup", "backup-bookings");
+});
+
+$("backup-gurus").addEventListener("click", () => {
+  downloadFirestoreBackup("gurus", "swami-gurus-backup", "backup-gurus");
 });
 
 $("admin-logout").addEventListener("click", async () => {
