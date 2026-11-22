@@ -232,25 +232,48 @@ async function loadAdminBookings() {
                 ${b.status === "प्रलंबित" ?
                   `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
               </td>
-              <td>
-                <select data-guru-select="${b.id}"
-                  ${approvedGurus.length === 0 ? "disabled" : ""}>
-                  <option value="">गुरुजी निवडा</option>
-                  ${approvedGurus.map(g => `
-                    <option value="${g.id}"
-                      ${b.assignedGuruId === g.id ? "selected" : ""}>
-                      ${esc(g.name)} - ${esc(g.city)}
-                    </option>
-                  `).join("")}
-                </select>
-                <button class="primary"
-                  data-assign-guru="${b.id}"
-                  ${approvedGurus.length === 0 ? "disabled" : ""}>
-                  गुरुजी नेमा
-                </button>
-                ${b.assignedGuruName ?
-                  `<div>नेमलेले: ${esc(b.assignedGuruName)}</div>` : ""}
-              </td>
+             
+<td>
+  <select data-guru-select="${b.id}"
+    ${approvedGurus.length === 0 ? "disabled" : ""}>
+    <option value="">गुरुजी निवडा</option>
+    ${approvedGurus.map(g => `
+      <option value="${g.id}"
+        ${b.assignedGuruId === g.id ? "selected" : ""}>
+        ${esc(g.name)} - ${esc(g.city)}
+      </option>
+    `).join("")}
+  </select>
+
+  <button class="primary"
+    data-assign-guru="${b.id}"
+    ${approvedGurus.length === 0 ? "disabled" : ""}>
+    गुरुजी नेमा
+  </button>
+
+  ${b.assignedGuruName ?
+    `<div>नेमलेले: ${esc(b.assignedGuruName)}</div>` : ""}
+
+  <div style="margin-top:8px">
+    <strong>कामाची स्थिती:</strong>
+    ${esc(b.guruStatus || "काम नेमलेले नाही")}
+  </div>
+
+  ${b.assignedGuruId ? `
+    <button class="secondary"
+      data-guru-status="${b.id}"
+      data-status="काम स्वीकारले">
+      काम स्वीकारले
+    </button>
+
+    <button class="primary"
+      data-guru-status="${b.id}"
+      data-status="काम पूर्ण">
+      काम पूर्ण
+    </button>
+  ` : ""}
+</td>
+      
             </tr>
           `).join("")}
         </tbody>
