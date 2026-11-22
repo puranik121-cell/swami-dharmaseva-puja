@@ -306,6 +306,34 @@ ${b.status === "निश्चित" ?
         }
       });
     });
+    
+    // बुकिंग रद्द करण्याचे बटण
+    box.querySelectorAll("[data-cancel-booking]").forEach(button => {
+      button.addEventListener("click", async () => {
+        const ok = confirm("हे बुकिंग रद्द करायचे आहे का?");
+        if (!ok) return;
+
+        try {
+          const bookingId = button.dataset.cancelBooking;
+          const booking = data.find(b => b.id === bookingId);
+
+          const updates = { status: "रद्द" };
+
+          if (booking && booking.assignedGuruId) {
+            updates.guruStatus = "काम रद्द";
+          }
+
+          await updateDoc(doc(db, "bookings", bookingId), updates);
+
+          alert("बुकिंग रद्द झाले.");
+          await loadAdminBookings();
+
+        } catch (error) {
+          alert("बुकिंग रद्द करताना त्रुटी: " + error.message);
+        }
+      });
+    });
+    
 // ग्राहकाला बुकिंग निश्चित झाल्याचा WhatsApp संदेश
 box.querySelectorAll("[data-customer-whatsapp]").forEach(button => {
   button.addEventListener("click", () => {
