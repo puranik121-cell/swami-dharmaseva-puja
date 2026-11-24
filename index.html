@@ -24,7 +24,7 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
 <main>
 <section class="hero"><div><h2 id="welcome">श्रद्धा, सेवा आणि शास्त्रोक्त विधी</h2><p id="intro">आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.</p></div><div class="om">ॐ</div></section>
 <nav class="tabs">
-<button class="tab active" data-tab="services" id="t-services">पूजा सेवा</button><button class="tab" data-tab="booking" id="t-booking">बुकिंग करा</button><button class="tab" data-tab="customers" id="t-customers">ग्राहक नोंदी</button><button class="tab" data-tab="guruji" id="t-guruji">गुरुजी नोंदणी</button><button class="tab" data-tab="admin" id="t-admin">ॲडमिन</button>
+<button class="tab active" data-tab="services" id="t-services">पूजा सेवा</button><button class="tab" data-tab="booking" id="t-booking">बुकिंग करा</button><button class="tab" data-tab="guruji" id="t-guruji">गुरुजी नोंदणी</button><button class="tab" data-tab="admin" id="t-admin">ॲडमिन</button>
 </nav>
 <section class="panel active" id="services"><h2 class="section-title" id="services-title">आमच्या पूजा सेवा</h2><div class="grid" id="servicegrid"></div> 
 <div class="notice" id="contact">
@@ -53,7 +53,7 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
 <div class="field"><label id="l-service">पूजा / विधी *</label><select name="service" id="service-select" required></select></div><div class="field"><label id="l-date">पूजेची तारीख *</label><input type="date" name="date" required></div>
 <div class="field"><label id="l-time">वेळ (ऐच्छिक)</label><input name="time" type="time"></div><div class="field"><label id="l-city">शहर / गाव *</label><input name="city" required></div>
 <div class="field full"><label id="l-address">पूर्ण पत्ता</label><textarea name="address"></textarea></div><div class="field full"><label id="l-notes">अतिरिक्त माहिती</label><textarea name="notes"></textarea></div></div><div class="actions"><button class="primary" type="submit" id="submit-booking">बुकिंग विनंती पाठवा</button></div><p id="booking-result" aria-live="polite"></p></form></section>
-<section class="panel" id="customers"><h2 class="section-title" id="customers-title">ग्राहक आणि बुकिंग नोंदी</h2><div class="stats"><div class="stat"><b id="count-all">0</b><span>एकूण बुकिंग</span></div><div class="stat"><b id="count-pending">0</b><span>प्रलंबित</span></div><div class="stat"><b id="count-approved">0</b><span>निश्चित</span></div></div><div style="overflow:auto;margin-top:15px"><table><thead><tr><th>ग्राहक</th><th>सेवा</th><th>तारीख</th><th>मोबाईल</th><th>स्थिती</th></tr></thead><tbody id="bookingrows"></tbody></table></div></section>
+
 <section class="panel" id="guruji"><h2 class="section-title" id="guruji-title">गुरुजी नोंदणी</h2><form class="formbox" id="guruform"><div class="fields"><div class="field"><label>गुरुजींचे पूर्ण नाव *</label><input name="name" required></div><div class="field"><label>मोबाईल नंबर *</label><input name="phone" required></div><div class="field"><label>शहर / जिल्हा *</label><input name="city" required></div><div class="field"><label>मुख्य सेवा / विशेषता</label><input name="skills"></div><div class="field full"><label>अनुभव व माहिती</label><textarea name="details"></textarea></div></div><div class="actions"><button class="primary" type="submit">नोंदणी विनंती पाठवा</button></div><p id="guru-result" aria-live="polite"></p></form></section>
 <section class="panel" id="admin">
   <h2 class="section-title">ॲडमिन लॉगिन</h2>
