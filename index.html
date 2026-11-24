@@ -222,8 +222,14 @@ async function loadAdminBookings() {
   const confirmedBox = $("confirmed-bookings");
   const cancelledBox = $("cancelled-bookings");
 
-  if (!box || !pendingBox || !confirmedBox || !cancelledBox) {
-    console.error("बुकिंग यादीसाठी आवश्यक HTML विभाग सापडले नाहीत.");
+  const countAll = $("admin-count-all");
+  const countPending = $("admin-count-pending");
+  const countApproved = $("admin-count-approved");
+  const countCancelled = $("admin-count-cancelled");
+
+  if (!box || !pendingBox || !confirmedBox || !cancelledBox ||
+      !countAll || !countPending || !countApproved || !countCancelled) {
+    console.error("बुकिंग यादी किंवा मोजणीसाठी आवश्यक HTML विभाग सापडले नाहीत.");
     return;
   }
 
@@ -239,10 +245,10 @@ async function loadAdminBookings() {
       .filter(item => item.data().status === "मंजूर")
       .map(item => ({ id: item.id, ...item.data() }));
 
-    $("admin-count-all").textContent = data.length;
-    $("admin-count-pending").textContent = data.filter(b => b.status === "प्रलंबित").length;
-    $("admin-count-approved").textContent = data.filter(b => b.status === "निश्चित").length;
-    $("admin-count-cancelled").textContent = data.filter(b => b.status === "रद्द").length;
+    countAll.textContent = data.length;
+    countPending.textContent = data.filter(b => b.status === "प्रलंबित").length;
+    countApproved.textContent = data.filter(b => b.status === "निश्चित").length;
+    countCancelled.textContent = data.filter(b => b.status === "रद्द").length;
 
     const search = $("booking-search");
     const sort = $("booking-sort");
@@ -306,9 +312,13 @@ async function loadAdminBookings() {
       const pending = shown.filter(b => !["निश्चित","रद्द"].includes(b.status));
       const confirmed = shown.filter(b => b.status === "निश्चित");
       const cancelled = shown.filter(b => b.status === "रद्द");
-      $("pending-bookings").innerHTML = renderCards(pending);
-      $("confirmed-bookings").innerHTML = renderCards(confirmed);
-      $("cancelled-bookings").innerHTML = renderCards(cancelled);
+      // सुरुवातीला मिळवलेले DOM घटकच वापरा; पुन्हा ID शोधताना null मिळण्याची शक्यता टाळा.
+      if (!pendingBox || !confirmedBox || !cancelledBox) {
+        throw new Error("बुकिंगच्या तीन याद्यांपैकी एखादी HTML मध्ये सापडत नाही. नवीन index.html अपलोड करा.");
+      }
+      pendingBox.innerHTML = renderCards(pending);
+      confirmedBox.innerHTML = renderCards(confirmed);
+      cancelledBox.innerHTML = renderCards(cancelled);
 
       box.querySelectorAll("[data-booking-id]").forEach(btn => btn.addEventListener("click", async () => {
         try {
