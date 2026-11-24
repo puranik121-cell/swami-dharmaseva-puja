@@ -385,10 +385,11 @@ box.querySelectorAll("[data-customer-whatsapp]").forEach(button => {
       "स्वामी धर्मसेवा पूजा, सोलापूर"
     ].filter(Boolean).join("\n");
 
-    const url = "https://wa.me/" + customerPhone +
-      "?text=" + encodeURIComponent(message);
+    // मोबाईलवरील WhatsApp ॲप थेट उघडण्यासाठी deep link वापरा
+    const whatsappUrl = "whatsapp://send?phone=" + customerPhone +
+      "&text=" + encodeURIComponent(message);
 
-    window.open(url, "_blank");
+    window.location.href = whatsappUrl;
   });
 });
     // निवडलेल्या गुरुजींना काम देणे
