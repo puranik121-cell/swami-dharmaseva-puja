@@ -173,6 +173,7 @@ import {
   addDoc,
   getDocs,
   updateDoc,
+  deleteDoc,
   doc,
   getDoc,
   setDoc
@@ -206,43 +207,30 @@ function renderServices(){ $("servicegrid").innerHTML=services.map(([s,i])=>`<ar
 window.approveBooking=i=>{bookings[i].status="निश्चित";save()};
 
 function render(){
-  if ($("count-all")) $("count-all").textContent = bookings.length;
-
-  if ($("count-pending"))
-    $("count-pending").textContent =
-      bookings.filter(b => b.status === "प्रलंबित").length;
-
-  if ($("count-approved"))
-    $("count-approved").textContent =
-      bookings.filter(b => b.status === "निश्चित").length;
-
-  if ($("bookingrows")) {
-    $("bookingrows").innerHTML = bookings.length
-      ? bookings.map(b => `
-        <tr>
-          <td>${esc(b.name)}</td>
-          <td>${esc(b.service)}</td>
-          <td>${esc(b.date)}</td>
-          <td>${esc(b.phone)}</td>
-          <td>${esc(b.status)}</td>
-        </tr>
-      `).join("")
-      : '<tr><td colspan="5">अद्याप बुकिंग नाही.</td></tr>';
-  }
-
-  if ($("gurulist")) {
-    $("gurulist").innerHTML = gurus.length
-      ? gurus.map(g => `
-        <div>${esc(g.name)} — ${esc(g.city)} • ${esc(g.phone)}</div>
-      `).join("")
-      : "अद्याप नोंदणी नाही.";
-  }
+  // स्थानिक ब्राउझरमधील जुना डेटा फक्त सुरक्षितपणे हाताळला जातो.
+  // प्रत्यक्ष ग्राहक बुकिंग आणि गुरुजी नोंदी Firebase मधून लोड होतात.
+  const localBookingCount = bookings.length;
+  const localGuruCount = gurus.length;
+  return { localBookingCount, localGuruCount };
 }
   
 function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 async function loadAdminBookings() {
+  // मुख्य कंटेनरचे textContent बदलू नका; त्यात तीन स्वतंत्र यादींचे HTML आहे.
   const box = $("admin-bookings");
-  box.textContent = "बुकिंग लोड होत आहेत...";
+  const pendingBox = $("pending-bookings");
+  const confirmedBox = $("confirmed-bookings");
+  const cancelledBox = $("cancelled-bookings");
+
+  if (!box || !pendingBox || !confirmedBox || !cancelledBox) {
+    console.error("बुकिंग यादीसाठी आवश्यक HTML विभाग सापडले नाहीत.");
+    return;
+  }
+
+  pendingBox.textContent = "बुकिंग लोड होत आहेत...";
+  confirmedBox.textContent = "बुकिंग लोड होत आहेत...";
+  cancelledBox.textContent = "बुकिंग लोड होत आहेत...";
+
   try {
     const snapshot = await getDocs(collection(db, "bookings"));
     const data = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
@@ -383,7 +371,11 @@ async function loadAdminBookings() {
     [search,sort].forEach(el => { if (el) el.oninput = draw; });
     draw();
   } catch(error) {
-    box.textContent = "बुकिंग दाखवताना त्रुटी: " + error.message;
+    console.error("बुकिंग दाखवताना त्रुटी:", error);
+    const message = "बुकिंग दाखवताना त्रुटी: " + (error.message || "अज्ञात त्रुटी");
+    pendingBox.textContent = message;
+    confirmedBox.textContent = message;
+    cancelledBox.textContent = message;
   }
 }
 
@@ -420,16 +412,13 @@ async function loadAdminGurus() {
           सेवा: ${esc(g.skills)}<br>
           माहिती: ${esc(g.details)}<br>
           स्थिती: ${esc(g.status)}
-          ${
-            g.status === "प्रलंबित"
-            ? `
-              <div class="actions">
-                <button class="primary" data-guru-id="${item.id}" data-status="मंजूर">मंजूर करा</button>
-                <button class="secondary" data-guru-id="${item.id}" data-status="नामंजूर">नामंजूर करा</button>
-              </div>
-            `
-            : ""
-          }
+          <div class="actions">
+            ${g.status === "प्रलंबित" ? `
+              <button class="primary" data-guru-id="${item.id}" data-status="मंजूर">मंजूर करा</button>
+              <button class="secondary" data-guru-id="${item.id}" data-status="नामंजूर">नामंजूर करा</button>
+            ` : ""}
+            <button type="button" class="secondary" data-delete-guru-id="${item.id}" style="background:#fff0f0;color:#a32323;border-color:#efcaca">डिलीट करा</button>
+          </div>
         </div>
       `;
     }).join("");
@@ -437,13 +426,33 @@ async function loadAdminGurus() {
     box.querySelectorAll("[data-guru-id]").forEach(button => {
       button.addEventListener("click", async () => {
         try {
+          button.disabled = true;
           await updateDoc(doc(db, "gurus", button.dataset.guruId), {
             status: button.dataset.status
           });
-
           await loadAdminGurus();
         } catch (error) {
+          button.disabled = false;
           box.textContent = "त्रुटी: " + error.message;
+        }
+      });
+    });
+
+    // गुरुजींची नोंद कायमची हटवण्यापूर्वी ॲडमिनकडून खात्री घेतली जाते.
+    box.querySelectorAll("[data-delete-guru-id]").forEach(button => {
+      button.addEventListener("click", async () => {
+        const card = button.closest(".guru-card");
+        const guruName = card?.querySelector("strong")?.textContent || "या गुरुजींची";
+        if (!confirm(`${guruName} यांची नोंद कायमची डिलीट करायची आहे का? ही कृती परत करता येणार नाही.`)) return;
+        try {
+          button.disabled = true;
+          button.textContent = "डिलीट होत आहे...";
+          await deleteDoc(doc(db, "gurus", button.dataset.deleteGuruId));
+          await loadAdminGurus();
+        } catch (error) {
+          button.disabled = false;
+          button.textContent = "डिलीट करा";
+          alert("गुरुजींची नोंद डिलीट झाली नाही. ॲडमिन परवानगी आणि इंटरनेट तपासा.\n" + error.message);
         }
       });
     });
@@ -455,7 +464,15 @@ async function loadAdminGurus() {
   
 window.approveGuru=i=>{gurus[i].status="मंजूर";save()};
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.tab).classList.add("active")}));
-function openBookingPanel(){document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));document.querySelector(".tab[data-tab=\"booking\"]").classList.add("active");$("booking").classList.add("active");$("booking").scrollIntoView({behavior:"smooth",block:"start"});}
+function openBookingPanel(){
+  const tab = document.querySelector('.tab[data-tab="booking"]');
+  const panel = $("booking");
+  if (!tab || !panel) return;
+  document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));
+  tab.classList.add("active");
+  panel.classList.add("active");
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
+}
 $("hero-booking-button").addEventListener("click",openBookingPanel);
 
 
