@@ -37,13 +37,19 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
     <a href="tel:+918668909094"
        class="primary"
        style="text-decoration:none">
-       📞 फोन करा
+       📞 कॉल: 8668909094
+    </a>
+
+    <a href="tel:+919421075047"
+       class="primary"
+       style="text-decoration:none">
+       📞 कॉल: 9421075047
     </a>
 
     <a href="https://wa.me/919421075047"
        class="secondary"
        style="text-decoration:none">
-       WhatsApp करा
+       WhatsApp: 9421075047
     </a>
   </div>
 </div>
@@ -78,6 +84,20 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
   </div>
 
   <div id="admin-data" style="display:none">
+    <h2 class="section-title">बुकिंग WhatsApp नंबर निवडा</h2>
+    <div class="card">
+      <p>ग्राहकांनी बुकिंग विनंती पाठवल्यावर संदेश कोणत्या नंबरवर यावा ते निवडा. ही निवड दोन्ही Admin मोबाईलवर एकसारखी राहील.</p>
+      <div class="field">
+        <label for="booking-whatsapp-number">बुकिंग संदेश प्राप्त करणारा नंबर</label>
+        <select id="booking-whatsapp-number">
+          <option value="8668909094">8668909094</option>
+          <option value="9421075047">9421075047</option>
+        </select>
+      </div>
+      <div class="actions"><button class="primary" id="save-booking-whatsapp">नंबर सेव्ह करा</button></div>
+      <p id="booking-whatsapp-message" aria-live="polite"></p>
+    </div>
+
     <h2 class="section-title">डेटा बॅकअप</h2>
     <div class="notice">
       बुकिंग आणि गुरुजींच्या नोंदींच्या JSON फाईल्स मोबाईलमध्ये डाउनलोड करा.
@@ -120,6 +140,8 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
+  setDoc,
   updateDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
@@ -551,6 +573,58 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{doc
 
 
 
+const DEFAULT_BOOKING_WHATSAPP = "8668909094";
+const ALLOWED_ADMIN_IDS = [
+  "SF0jGaa9qjcl3y0cUBhpFzu79b52",
+  "eePMp6XlyjgdpUtEcVChuqfK4yF3"
+];
+
+async function getBookingWhatsappNumber() {
+  try {
+    const settingSnap = await getDoc(doc(db, "settings", "contact"));
+    const number = settingSnap.exists() ? String(settingSnap.data().bookingWhatsappNumber || "") : "";
+    return ["8668909094", "9421075047"].includes(number) ? number : DEFAULT_BOOKING_WHATSAPP;
+  } catch (error) {
+    console.warn("Booking WhatsApp setting unavailable; using default number.", error);
+    return DEFAULT_BOOKING_WHATSAPP;
+  }
+}
+
+async function loadBookingWhatsappSetting() {
+  const message = $("booking-whatsapp-message");
+  try {
+    const number = await getBookingWhatsappNumber();
+    $("booking-whatsapp-number").value = number;
+    message.textContent = "सध्या निवडलेला नंबर: " + number;
+  } catch (error) {
+    message.textContent = "नंबर लोड करताना त्रुटी: " + error.message;
+  }
+}
+
+$("save-booking-whatsapp").addEventListener("click", async () => {
+  const message = $("booking-whatsapp-message");
+  const number = $("booking-whatsapp-number").value;
+  if (!auth.currentUser || !ALLOWED_ADMIN_IDS.includes(auth.currentUser.uid)) {
+    message.textContent = "हा बदल करण्यासाठी अधिकृत Admin लॉगिन आवश्यक आहे.";
+    return;
+  }
+  if (!["8668909094", "9421075047"].includes(number)) {
+    message.textContent = "कृपया योग्य नंबर निवडा.";
+    return;
+  }
+  const button = $("save-booking-whatsapp");
+  button.disabled = true;
+  message.textContent = "नंबर सेव्ह होत आहे...";
+  try {
+    await setDoc(doc(db, "settings", "contact"), { bookingWhatsappNumber: number });
+    message.textContent = "बुकिंग WhatsApp नंबर सेव्ह झाला: " + number;
+  } catch (error) {
+    message.textContent = "नंबर सेव्ह करताना त्रुटी: " + error.message + "\nFirestore Rules अपडेट केले आहेत का ते तपासा.";
+  } finally {
+    button.disabled = false;
+  }
+});
+
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -589,8 +663,9 @@ $("bookingform").addEventListener("submit", async e => {
 
     e.target.reset();
 
+    const bookingWhatsappNumber = await getBookingWhatsappNumber();
     const whatsappURL =
-      "https://wa.me/918668909094?text=" +
+      "https://wa.me/91" + bookingWhatsappNumber + "?text=" +
       encodeURIComponent(message);
 
     window.location.href = whatsappURL;
@@ -641,12 +716,18 @@ $("admin-login").addEventListener("click", async () => {
   $("admin-message").textContent = "लॉगिन सुरू आहे...";
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+
+    if (!ALLOWED_ADMIN_IDS.includes(credential.user.uid)) {
+      await signOut(auth);
+      throw new Error("या खात्याला Admin परवानगी नाही.");
+    }
 
     $("admin-message").textContent = "लॉगिन यशस्वी झाले!";
     $("admin-logout").style.display = "inline-block";
     $("admin-data").style.display = "block";
 
+    await loadBookingWhatsappSetting();
     await loadAdminBookings();
     await loadAdminGurus();
 
@@ -661,12 +742,7 @@ async function downloadFirestoreBackup(collectionName, filePrefix, buttonId) {
   const message = $("backup-message");
   const button = $(buttonId);
 
-  const allowedAdminIds = [
-    "SF0jGaa9qjcl3y0cUBhpFzu79b52",
-    "eePMp6XlyjgdpUtEcVChuqfK4yF3"
-  ];
-
-  if (!auth.currentUser || !allowedAdminIds.includes(auth.currentUser.uid)) {
+  if (!auth.currentUser || !ALLOWED_ADMIN_IDS.includes(auth.currentUser.uid)) {
     message.textContent = "बॅकअपसाठी अधिकृत Admin लॉगिन आवश्यक आहे.";
     return;
   }
@@ -724,6 +800,7 @@ $("admin-logout").addEventListener("click", async () => {
   await signOut(auth);
   $("admin-data").style.display = "none";
   $("admin-logout").style.display = "none";
+  $("admin-password").value = "";
   $("admin-message").textContent = "लॉगआउट झाले.";
 });
 </script>
