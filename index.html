@@ -10,19 +10,51 @@
 header{background:linear-gradient(120deg,#0d3025,#1c6045);color:white;padding:20px max(18px,calc((100% - 1120px)/2));display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:50%;background:var(--gold);color:#183c2d;display:grid;place-items:center;font-size:26px;font-weight:800}.brand h1{font-size:20px;margin:0}.brand p{margin:3px 0 0;color:#e9dfc8;font-size:12px}
 select,input,textarea,button{font:inherit}select{border:1px solid #d6c69f;border-radius:10px;padding:9px;background:white;color:var(--ink)}
-main{max-width:1120px;margin:24px auto;padding:0 16px}.hero{background:linear-gradient(120deg,#fff8e7,#f0e3c6);border:1px solid #e6d6b3;border-radius:20px;padding:26px;display:flex;justify-content:space-between;gap:20px;align-items:center}.hero h2{font-size:clamp(23px,4vw,34px);margin:0 0 8px;color:var(--green)}.hero p{margin:0;color:#58675e;line-height:1.6}.hero .om{font-size:68px;color:#b88a35}
+main{max-width:1120px;margin:24px auto;padding:0 16px}.hero{background:linear-gradient(120deg,#fff8e7,#f0e3c6);border:1px solid #e6d6b3;border-radius:20px;padding:26px;display:flex;justify-content:space-between;gap:20px;align-items:center}.hero h2{font-size:clamp(23px,4vw,34px);margin:0 0 8px;color:var(--green)}.hero p{margin:0;color:#58675e;line-height:1.6}.hero .om{font-size:68px;color:#b88a35}.hero-booking{display:inline-block;margin-top:14px;background:var(--green);color:#fff;text-decoration:none;border-radius:12px;padding:13px 20px;font-weight:800;box-shadow:0 3px 0 #09271d}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.tab{border:1px solid var(--line);background:white;color:var(--green);padding:10px 15px;border-radius:999px;cursor:pointer}.tab.active{background:var(--green);color:white;border-color:var(--green)}
 .panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.service,.card,.formbox{background:white;border:1px solid var(--line);border-radius:16px;padding:18px}.service h3{margin:8px 0 5px;color:var(--green);font-size:17px}.service p{margin:0;color:var(--muted);font-size:13px}.symbol{font-size:27px}.section-title{font-size:21px;color:var(--green);margin:24px 0 12px}.formbox{max-width:720px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:13px;color:#53645a;font-weight:650}input,textarea,.field select{width:100%;padding:11px;border:1px solid #d9ded8;border-radius:10px;background:#fff}textarea{min-height:75px;resize:vertical}.primary{background:var(--green);color:white;border:0;border-radius:10px;padding:12px 18px;cursor:pointer;font-weight:700}.secondary{background:#f8f1df;color:#654b18;border:1px solid #e8d7ae;border-radius:10px;padding:10px 14px;cursor:pointer}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:25px;color:var(--green)}.stat span{font-size:13px;color:var(--muted)}table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px}th{background:#f4efdf;color:#5d4a20}.empty{color:var(--muted);padding:20px;text-align:center;background:white;border-radius:12px}.notice{background:#fff5d9;border:1px solid #ead49a;padding:12px;border-radius:12px;font-size:13px;color:#634d1c;margin:14px 0}
 footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:20px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.stats{grid-template-columns:1fr 1fr}}
 @media(max-width:460px){.grid{grid-template-columns:1fr}.hero .om{font-size:48px}.brand h1{font-size:17px}}
+
+/* Admin: mobile-first, clean booking cards and status colors */
+.admin-tools{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:10px;margin:14px 0}
+.admin-tools input,.admin-tools select{min-width:0;width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.booking-list{display:grid;gap:12px;margin-top:14px}.booking-group{background:#f8f7f2;border:1px solid var(--line);border-radius:15px;padding:12px;margin:16px 0}.booking-group h3{margin:2px 0 10px;font-size:17px}.booking-group.pending h3{color:#8a6100}.booking-group.confirmed h3{color:#17653a}.booking-group.cancelled h3{color:#a32323}
+.booking-card{background:#fff;border:1px solid var(--line);border-left:6px solid #d6a52c;border-radius:14px;padding:14px;box-shadow:0 2px 8px #163b2c0a}
+.booking-card.status-confirmed{border-left-color:#23834e}
+.booking-card.status-cancelled{border-left-color:#c83b3b;background:#fffafa}
+.booking-card.status-progress{border-left-color:#2874b8}
+.booking-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.booking-name{font-weight:800;color:var(--green);font-size:17px}
+.status-pill{display:inline-block;padding:5px 10px;border-radius:99px;font-size:12px;font-weight:750;background:#fff0c2;color:#76520a}
+.status-pill.confirmed{background:#dff4e6;color:#17653a}
+.status-pill.cancelled{background:#ffe1e1;color:#a32323}
+.status-pill.progress{background:#e0efff;color:#17558c}
+.booking-details{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:13px}
+.booking-details span{color:var(--muted)}
+.booking-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.booking-actions button{min-height:42px}
+.booking-card select{max-width:100%;width:100%;margin-top:8px}
+.guru-card{border-left:5px solid #d6a52c}
+.guru-card.guru-approved{border-left-color:#23834e}
+.guru-card.guru-rejected{border-left-color:#c83b3b}
+.stats .stat:nth-child(4){grid-column:auto}
+@media(max-width:650px){
+ .admin-tools{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr 1fr}
+ .booking-details{grid-template-columns:1fr 1fr}
+ .booking-card{padding:12px}
+ .booking-actions button{flex:1 1 145px}
+}
+
 </style>
 </head>
 <body>
 <header><div class="brand"><div class="logo">ॐ</div><div><h1 id="appname">स्वामी धर्मसेवा पूजा</h1><p id="tagline">पूजा सेवा • बुकिंग • ग्राहक व्यवस्थापन</p></div></div>
 <select id="lang" aria-label="Language"><option value="mr">मराठी</option><option value="hi">हिन्दी</option><option value="en">English</option></select></header>
 <main>
-<section class="hero"><div><h2 id="welcome">श्रद्धा, सेवा आणि शास्त्रोक्त विधी</h2><p id="intro">आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.</p></div><div class="om">ॐ</div></section>
+<section class="hero"><div><h2 id="welcome">श्रद्धा, सेवा आणि शास्त्रोक्त विधी</h2><p id="intro">आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.</p><button class="hero-booking" id="hero-booking-button" type="button">🙏 आपली पूजा बुकिंग करा</button></div><div class="om">ॐ</div></section>
 <nav class="tabs">
 <button class="tab active" data-tab="services" id="t-services">पूजा सेवा</button><button class="tab" data-tab="booking" id="t-booking">बुकिंग करा</button><button class="tab" data-tab="guruji" id="t-guruji">गुरुजी नोंदणी</button><button class="tab" data-tab="admin" id="t-admin">ॲडमिन</button>
 </nav>
@@ -34,23 +66,9 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
   पत्ता: बनशंकरी नगर, शेळगी, सोलापूर
 
   <div class="actions">
-    <a href="tel:+918668909094"
-       class="primary"
-       style="text-decoration:none">
-       📞 कॉल: 8668909094
-    </a>
-
-    <a href="tel:+919421075047"
-       class="primary"
-       style="text-decoration:none">
-       📞 कॉल: 9421075047
-    </a>
-
-    <a href="https://wa.me/919421075047"
-       class="secondary"
-       style="text-decoration:none">
-       WhatsApp: 9421075047
-    </a>
+    <a href="tel:+918668909094" class="primary" style="text-decoration:none">📞 फोन 8668909094</a>
+    <a href="tel:+919421075047" class="secondary" style="text-decoration:none">📞 फोन 9421075047</a>
+    <a href="https://wa.me/919421075047" class="secondary" style="text-decoration:none">WhatsApp करा</a>
   </div>
 </div>
 </section>
@@ -84,20 +102,6 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
   </div>
 
   <div id="admin-data" style="display:none">
-    <h2 class="section-title">बुकिंग WhatsApp नंबर निवडा</h2>
-    <div class="card">
-      <p>ग्राहकांनी बुकिंग विनंती पाठवल्यावर संदेश कोणत्या नंबरवर यावा ते निवडा. ही निवड दोन्ही Admin मोबाईलवर एकसारखी राहील.</p>
-      <div class="field">
-        <label for="booking-whatsapp-number">बुकिंग संदेश प्राप्त करणारा नंबर</label>
-        <select id="booking-whatsapp-number">
-          <option value="8668909094">8668909094</option>
-          <option value="9421075047">9421075047</option>
-        </select>
-      </div>
-      <div class="actions"><button class="primary" id="save-booking-whatsapp">नंबर सेव्ह करा</button></div>
-      <p id="booking-whatsapp-message" aria-live="polite"></p>
-    </div>
-
     <h2 class="section-title">डेटा बॅकअप</h2>
     <div class="notice">
       बुकिंग आणि गुरुजींच्या नोंदींच्या JSON फाईल्स मोबाईलमध्ये डाउनलोड करा.
@@ -109,13 +113,41 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
     </div>
     <p id="backup-message" aria-live="polite"></p>
 
+    <h2 class="section-title">बुकिंग WhatsApp नंबर</h2>
+    <div class="card">
+      <p style="margin-top:0">ग्राहकाने बुकिंग केल्यावर कोणत्या नंबरवर WhatsApp संदेश उघडायचा ते निवडा. ही निवड दोन्ही Admin खात्यांसाठी समान राहील.</p>
+      <div class="field">
+        <label for="booking-whatsapp-number">बुकिंग संदेशाचा नंबर</label>
+        <select id="booking-whatsapp-number">
+          <option value="8668909094">8668909094</option>
+          <option value="9421075047">9421075047</option>
+        </select>
+      </div>
+      <div class="actions"><button class="primary" id="save-booking-whatsapp">नंबर सेव्ह करा</button></div>
+      <p id="contact-setting-message" aria-live="polite"></p>
+    </div>
+
     <h2 class="section-title">ग्राहक बुकिंग नोंदी</h2>
     <div class="stats">
       <div class="stat"><b id="admin-count-all">0</b><span>एकूण बुकिंग</span></div>
       <div class="stat"><b id="admin-count-pending">0</b><span>प्रलंबित</span></div>
       <div class="stat"><b id="admin-count-approved">0</b><span>निश्चित</span></div>
+      <div class="stat"><b id="admin-count-cancelled">0</b><span>रद्द</span></div>
     </div>
-    <div id="admin-bookings" style="overflow:auto;margin-top:15px"></div>
+    <div class="admin-tools">
+      <input id="booking-search" type="search" placeholder="नाव, मोबाईल किंवा पूजा शोधा">
+      <select id="booking-sort" aria-label="तारखेनुसार क्रम">
+        <option value="date-asc">जवळची तारीख आधी</option>
+        <option value="date-desc">दूरची तारीख आधी</option>
+        <option value="newest">नवीन नोंद आधी</option>
+        <option value="oldest">जुनी नोंद आधी</option>
+      </select>
+    </div>
+    <div id="admin-bookings">
+      <section class="booking-group pending"><h3>🟡 प्रलंबित बुकिंग</h3><div id="pending-bookings" class="booking-list"></div></section>
+      <section class="booking-group confirmed"><h3>🟢 निश्चित बुकिंग</h3><div id="confirmed-bookings" class="booking-list"></div></section>
+      <section class="booking-group cancelled"><h3>🔴 रद्द बुकिंग</h3><div id="cancelled-bookings" class="booking-list"></div></section>
+    </div>
   
 <h2 class="section-title">गुरुजी नोंदणी अर्ज</h2>
 <div id="admin-gurus" style="overflow:auto;margin-top:15px">
@@ -140,10 +172,10 @@ import {
   collection,
   addDoc,
   getDocs,
-  getDoc,
-  setDoc,
   updateDoc,
-  doc
+  doc,
+  getDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
 
@@ -164,7 +196,7 @@ const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true
 });
   
-const services=[["वरदाशंकर पूजा","🪔"],["सत्यनारायण पूजा","कलश"],["रुद्राभिषेक","🔱"],["वास्तुशांती","🏠"],["गृहप्रवेश","🚪"],["विवाह विधी","💐"],["ग्रहशांती","🙏"],["इतर धार्मिक विधी","ॐ"]];
+const services=[["वरदाशंकर पूजा","🪔"],["सत्यनारायण पूजा","कलश"],["रुद्राभिषेक","🔱"],["वास्तुशांती","🏠"],["गृहप्रवेश","🚪"],["विवाह विधी","💐"],["ग्रहशांती","🙏"],["साखरपुडा विधी","💍"],["चोळी","🌸"],["नामकरण विधी","👶"],["इतर धार्मिक विधी","ॐ"]];
 const translations={mr:{tagline:"पूजा सेवा • बुकिंग • ग्राहक व्यवस्थापन",welcome:"श्रद्धा, सेवा आणि शास्त्रोक्त विधी",intro:"आपल्या पूजेसाठी सेवा निवडा आणि बुकिंगची विनंती पाठवा. गुरुजींची उपलब्धता तपासून बुकिंग निश्चित केले जाईल.",services:"पूजा सेवा",booking:"बुकिंग करा",customers:"ग्राहक नोंदी",guruji:"गुरुजी नोंदणी",admin:"ॲडमिन",servTitle:"आमच्या पूजा सेवा",bookTitle:"पूजा बुकिंग विनंती",name:"ग्राहकाचे नाव *",phone:"मोबाईल नंबर *",service:"पूजा / विधी *",date:"पूजेची तारीख *",time:"वेळ (ऐच्छिक)",city:"शहर / गाव *",address:"पूर्ण पत्ता",notes:"अतिरिक्त माहिती",submit:"बुकिंग विनंती पाठवा",sent:"बुकिंग विनंती नोंदवली. गुरुजी आपल्याशी संपर्क साधतील.",customerTitle:"ग्राहक आणि बुकिंग नोंदी"},
 hi:{tagline:"पूजा सेवा • बुकिंग • ग्राहक प्रबंधन",welcome:"श्रद्धा, सेवा और शास्त्रोक्त विधि",intro:"अपनी पूजा सेवा चुनें और बुकिंग अनुरोध भेजें। गुरुजी की उपलब्धता जाँचकर बुकिंग की पुष्टि की जाएगी।",services:"पूजा सेवाएँ",booking:"बुकिंग करें",customers:"ग्राहक रिकॉर्ड",guruji:"गुरुजी पंजीकरण",admin:"एडमिन",servTitle:"हमारी पूजा सेवाएँ",bookTitle:"पूजा बुकिंग अनुरोध",name:"ग्राहक का नाम *",phone:"मोबाइल नंबर *",service:"पूजा / विधि *",date:"पूजा की तारीख *",time:"समय (वैकल्पिक)",city:"शहर / गाँव *",address:"पूरा पता",notes:"अतिरिक्त जानकारी",submit:"बुकिंग अनुरोध भेजें",sent:"बुकिंग अनुरोध दर्ज हुआ। गुरुजी आपसे संपर्क करेंगे।",customerTitle:"ग्राहक और बुकिंग रिकॉर्ड"},
 en:{tagline:"Puja services • Booking • Customer management",welcome:"Faith, service and traditional rituals",intro:"Choose a puja service and send a booking request. The booking will be confirmed after the priest checks availability.",services:"Puja services",booking:"Book a puja",customers:"Customer records",guruji:"Priest registration",admin:"Admin",servTitle:"Our puja services",bookTitle:"Puja booking request",name:"Customer name *",phone:"Mobile number *",service:"Puja / ritual *",date:"Puja date *",time:"Time (optional)",city:"City / village *",address:"Full address",notes:"Additional information",submit:"Send booking request",sent:"Booking request saved. The priest will contact you.",customerTitle:"Customers and bookings"}};
@@ -211,307 +243,160 @@ function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 async function loadAdminBookings() {
   const box = $("admin-bookings");
   box.textContent = "बुकिंग लोड होत आहेत...";
-
   try {
     const snapshot = await getDocs(collection(db, "bookings"));
-    const data = snapshot.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
-
-    $("admin-count-all").textContent = data.length;
-    $("admin-count-pending").textContent =
-      data.filter(b => b.status === "प्रलंबित").length;
-    $("admin-count-approved").textContent =
-      data.filter(b => b.status === "निश्चित").length;
-
-    if (data.length === 0) {
-      box.textContent = "अद्याप बुकिंग नाही.";
-      return;
-    }
-
-  
-// मंजूर गुरुजींची यादी मिळवा
+    const data = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
     const guruSnapshot = await getDocs(collection(db, "gurus"));
-
     const approvedGurus = guruSnapshot.docs
       .filter(item => item.data().status === "मंजूर")
-      .map(item => ({
-        id: item.id,
-        ...item.data()
+      .map(item => ({ id: item.id, ...item.data() }));
+
+    $("admin-count-all").textContent = data.length;
+    $("admin-count-pending").textContent = data.filter(b => b.status === "प्रलंबित").length;
+    $("admin-count-approved").textContent = data.filter(b => b.status === "निश्चित").length;
+    $("admin-count-cancelled").textContent = data.filter(b => b.status === "रद्द").length;
+
+    const search = $("booking-search");
+    const sort = $("booking-sort");
+    const draw = () => {
+      const term = (search?.value || "").trim().toLowerCase();
+      let shown = data.filter(b => {
+        const matchesTerm = !term ||
+          String(b.name || "").toLowerCase().includes(term) ||
+          String(b.phone || "").replace(/\D/g, "").includes(term.replace(/\D/g, "")) ||
+          String(b.service || "").toLowerCase().includes(term);
+        return matchesTerm;
+      });
+      const dateVal = b => String(b.date || "9999-99-99");
+      if (sort?.value === "date-desc") shown.sort((a,b) => dateVal(b).localeCompare(dateVal(a)));
+      else if (sort?.value === "newest") shown.sort((a,b) => String(b.created||"").localeCompare(String(a.created||"")));
+      else if (sort?.value === "oldest") shown.sort((a,b) => String(a.created||"").localeCompare(String(b.created||"")));
+      else shown.sort((a,b) => dateVal(a).localeCompare(dateVal(b)));
+
+      const renderCards = list => list.length ? list.map(b => {
+        const statusClass = b.status === "रद्द" ? "cancelled" :
+          b.status === "निश्चित" ? "confirmed" : "pending";
+        const guruStatusClass = b.guruStatus === "काम स्वीकारले" ? "progress" :
+          b.guruStatus === "काम पूर्ण" ? "confirmed" : "";
+        return `
+        <article class="booking-card status-${statusClass}">
+          <div class="booking-head">
+            <div class="booking-name">${esc(b.name || "नाव उपलब्ध नाही")}</div>
+            <span class="status-pill ${statusClass}">${esc(b.status || "प्रलंबित")}</span>
+          </div>
+          <div class="booking-details">
+            <div><span>पूजा</span><br><strong>${esc(b.service)}</strong></div>
+            <div><span>तारीख</span><br><strong>${esc(b.date)}</strong></div>
+            <div><span>मोबाईल</span><br><strong>${esc(b.phone)}</strong></div>
+            <div><span>वेळ</span><br><strong>${esc(b.time || "दिलेली नाही")}</strong></div>
+            <div><span>शहर / गाव</span><br><strong>${esc(b.city || "—")}</strong></div>
+            <div><span>गुरुजी</span><br><strong>${esc(b.assignedGuruName || "नियुक्त नाही")}</strong></div>
+          </div>
+          ${b.status !== "रद्द" ? `
+            <div class="field" style="margin-top:12px">
+              <label>गुरुजी निवडा</label>
+              <select data-guru-select="${b.id}" ${approvedGurus.length === 0 ? "disabled" : ""}>
+                <option value="">गुरुजी निवडा</option>
+                ${approvedGurus.map(g => `<option value="${g.id}" ${b.assignedGuruId === g.id ? "selected" : ""}>${esc(g.name)} - ${esc(g.city)}</option>`).join("")}
+              </select>
+            </div>` : ""}
+          ${b.assignedGuruId ? `<p style="margin:9px 0 0"><span>गुरुजींच्या कामाची स्थिती:</span> <span class="status-pill ${guruStatusClass}">${esc(b.guruStatus || "काम नेमले")}</span></p>` : ""}
+          <div class="booking-actions">
+            ${b.status === "प्रलंबित" ? `<button class="primary" data-booking-id="${b.id}">बुकिंग निश्चित करा</button>` : ""}
+            ${b.status !== "रद्द" ? `<button class="secondary" data-cancel-booking="${b.id}">बुकिंग रद्द करा</button>` : ""}
+            ${b.status === "निश्चित" ? `<button class="secondary" data-customer-whatsapp="${b.id}">ग्राहकाला निश्चिती संदेश</button>` : ""}
+            ${b.status !== "रद्द" && approvedGurus.length ? `<button class="primary" data-assign-guru="${b.id}">गुरुजी नेमा</button>` : ""}
+            ${b.status === "रद्द" ? `<button class="secondary" data-cancel-customer="${b.id}">ग्राहकाला रद्द संदेश</button>` : ""}
+            ${b.status === "रद्द" && b.assignedGuruPhone ? `<button class="secondary" data-cancel-guru="${b.id}">गुरुजींना रद्द संदेश</button>` : ""}
+            ${b.assignedGuruId && b.status !== "रद्द" ? `
+              <button class="secondary" data-guru-status="${b.id}" data-status="काम स्वीकारले">काम स्वीकारले</button>
+              <button class="secondary" data-guru-status="${b.id}" data-status="काम पूर्ण">काम पूर्ण</button>` : ""}
+            <a class="secondary" style="text-decoration:none;display:inline-flex;align-items:center" href="tel:${String(b.phone||"").replace(/[^\d+]/g,"")}">ग्राहकाला कॉल</a>
+          </div>
+        </article>`;
+      }).join("") : '<div class="empty">या विभागात सध्या बुकिंग नाही.</div>';
+      const pending = shown.filter(b => !["निश्चित","रद्द"].includes(b.status));
+      const confirmed = shown.filter(b => b.status === "निश्चित");
+      const cancelled = shown.filter(b => b.status === "रद्द");
+      $("pending-bookings").innerHTML = renderCards(pending);
+      $("confirmed-bookings").innerHTML = renderCards(confirmed);
+      $("cancelled-bookings").innerHTML = renderCards(cancelled);
+
+      box.querySelectorAll("[data-booking-id]").forEach(btn => btn.addEventListener("click", async () => {
+        try {
+          await updateDoc(doc(db, "bookings", btn.dataset.bookingId), {status:"निश्चित"});
+          await loadAdminBookings();
+        } catch(error) { alert("बुकिंग निश्चित करताना त्रुटी: " + error.message); }
       }));
 
-    box.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>नाव</th>
-            <th>पूजा</th>
-            <th>तारीख</th>
-            <th>मोबाईल</th>
-            <th>स्थिती</th>
-            <th>गुरुजी निवडा</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.map(b => `
-            <tr>
-              <td>${esc(b.name)}</td>
-              <td>${esc(b.service)}</td>
-              <td>${esc(b.date)}</td>
-              <td>${esc(b.phone)}</td>
-              <td>
-              ${esc(b.status)}
-
-${b.status === "प्रलंबित" ?
-  `<button class="secondary" data-booking-id="${b.id}">निश्चित करा</button>` : ""}
-
-${b.status !== "रद्द" ?
-  `<button class="secondary" data-cancel-booking="${b.id}">
-    रद्द करा
-  </button>` : ""}
-
-${b.status === "निश्चित" ?
-  `<button class="primary" data-customer-whatsapp="${b.id}">
-    ग्राहकाला WhatsApp संदेश
-  </button>` : ""}
-              </td>
-             
-<td>
-  <select data-guru-select="${b.id}"
-    ${approvedGurus.length === 0 || b.status === "रद्द" ? "disabled" : ""}>
-    <option value="">गुरुजी निवडा</option>
-    ${approvedGurus.map(g => `
-      <option value="${g.id}"
-        ${b.assignedGuruId === g.id ? "selected" : ""}>
-        ${esc(g.name)} - ${esc(g.city)}
-      </option>
-    `).join("")}
-  </select>
-
-  <button class="primary"
-  data-assign-guru="${b.id}"
-  ${approvedGurus.length === 0 || b.status === "रद्द" ? "disabled" : ""}>
-  गुरुजी नेमा
-</button>
-
-  ${b.assignedGuruName ?
-    `<div>नेमलेले: ${esc(b.assignedGuruName)}</div>` : ""}
-
-  <div style="margin-top:8px">
-    <strong>कामाची स्थिती:</strong>
-    ${esc(b.guruStatus || "काम नेमलेले नाही")}
-  </div>
-
-  ${b.assignedGuruId && b.status !== "रद्द" ? `
-    <button class="secondary"
-      data-guru-status="${b.id}"
-      data-status="काम स्वीकारले">
-      काम स्वीकारले
-    </button>
-
-    <button class="primary"
-      data-guru-status="${b.id}"
-      data-status="काम पूर्ण">
-      काम पूर्ण
-    </button>
-  ` : ""}
-</td>
-      
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
-
-    // बुकिंग निश्चित करण्याचे बटण
-    box.querySelectorAll("[data-booking-id]").forEach(button => {
-      button.addEventListener("click", async () => {
+      box.querySelectorAll("[data-cancel-booking]").forEach(btn => btn.addEventListener("click", async () => {
+        if (!confirm("हे बुकिंग रद्द करायचे आहे का? रद्द झाल्यावर ग्राहक आणि नियुक्त गुरुजींना संदेश पाठवण्याची बटणे दिसतील.")) return;
         try {
-          await updateDoc(doc(db, "bookings", button.dataset.bookingId), {
-            status: "निश्चित"
-          });
-
+          const booking = data.find(b => b.id === btn.dataset.cancelBooking);
+          const updates = {status:"रद्द"};
+          if (booking?.assignedGuruId) updates.guruStatus = "काम रद्द";
+          await updateDoc(doc(db, "bookings", btn.dataset.cancelBooking), updates);
           await loadAdminBookings();
-          await loadAdminGurus();
-        } catch (error) {
-          alert("त्रुटी: " + error.message);
-        }
-      });
-    });
-    
-    // बुकिंग रद्द करण्याचे बटण
-    box.querySelectorAll("[data-cancel-booking]").forEach(button => {
-      button.addEventListener("click", async () => {
-        const ok = confirm("हे बुकिंग रद्द करायचे आहे का?");
-        if (!ok) return;
+          alert("बुकिंग रद्द झाले. आता ग्राहक आणि नियुक्त गुरुजींना रद्द संदेश पाठवू शकता.");
+        } catch(error) { alert("बुकिंग रद्द करताना त्रुटी: " + error.message); }
+      }));
 
+      box.querySelectorAll("[data-customer-whatsapp]").forEach(btn => btn.addEventListener("click", () => {
+        const b = data.find(x => x.id === btn.dataset.customerWhatsapp);
+        if (b) openBookingWhatsApp(b.phone, "नमस्कार 🙏\nआपली स्वामी धर्मसेवा पूजा येथील बुकिंग निश्चित करण्यात आली आहे.\nपूजा: "+(b.service||"")+"\nतारीख: "+(b.date||"")+"\nधन्यवाद!\nस्वामी धर्मसेवा पूजा, सोलापूर");
+      }));
+
+      box.querySelectorAll("[data-cancel-customer]").forEach(btn => btn.addEventListener("click", () => {
+        const b = data.find(x => x.id === btn.dataset.cancelCustomer);
+        if (b) openBookingWhatsApp(b.phone, "नमस्कार 🙏\nआपली पूजा बुकिंग रद्द करण्यात आली आहे.\nग्राहकाचे नाव: "+(b.name||"")+"\nपूजा: "+(b.service||"")+"\nतारीख: "+(b.date||"")+"\nकाही शंका असल्यास कृपया संपर्क साधा.\nस्वामी धर्मसेवा पूजा, सोलापूर");
+      }));
+
+      box.querySelectorAll("[data-cancel-guru]").forEach(btn => btn.addEventListener("click", () => {
+        const b = data.find(x => x.id === btn.dataset.cancelGuru);
+        if (b) openBookingWhatsApp(b.assignedGuruPhone, "नमस्कार गुरुजी 🙏\nआपल्याला नेमलेले पूजा काम रद्द झाले आहे. कृपया त्या दिवशी जाण्याची तयारी करू नये.\nग्राहकाचे नाव: "+(b.name||"")+"\nपूजा: "+(b.service||"")+"\nतारीख: "+(b.date||"")+"\nस्वामी धर्मसेवा पूजा, सोलापूर");
+      }));
+
+      box.querySelectorAll("[data-assign-guru]").forEach(btn => btn.addEventListener("click", async () => {
         try {
-          const bookingId = button.dataset.cancelBooking;
-          const booking = data.find(b => b.id === bookingId);
-
-          const updates = { status: "रद्द" };
-
-          if (booking && booking.assignedGuruId) {
-            updates.guruStatus = "काम रद्द";
-          }
-
-          await updateDoc(doc(db, "bookings", bookingId), updates);
-
-          alert("बुकिंग रद्द झाले.");
-          await loadAdminBookings();
-
-        } catch (error) {
-          alert("बुकिंग रद्द करताना त्रुटी: " + error.message);
-        }
-      });
-    });
-    
-// ग्राहकाला बुकिंग निश्चित झाल्याचा WhatsApp संदेश
-box.querySelectorAll("[data-customer-whatsapp]").forEach(button => {
-  button.addEventListener("click", () => {
-
-    const booking = data.find(
-      b => b.id === button.dataset.customerWhatsapp
-    );
-
-    if (!booking) {
-      alert("बुकिंगची माहिती मिळाली नाही.");
-      return;
-    }
-
-    let customerPhone = String(booking.phone || "")
-      .replace(/\D/g, "");
-
-    if (customerPhone.length === 10) {
-      customerPhone = "91" + customerPhone;
-    }
-
-    if (!/^91[0-9]{10}$/.test(customerPhone)) {
-      alert("ग्राहकाचा मोबाईल नंबर तपासा.");
-      return;
-    }
-
-    const message = [
-      "नमस्कार 🙏",
-      "",
-      "आपली स्वामी धर्मसेवा पूजा येथे केलेली बुकिंग विनंती निश्चित करण्यात आली आहे.",
-      "",
-      "पूजा: " + (booking.service || ""),
-      "तारीख: " + (booking.date || ""),
-      booking.time ? "वेळ: " + booking.time : "",
-      "",
-      "वेळेत काही बदल आवश्यक असल्यास आपणास फोन किंवा WhatsApp द्वारे कळवण्यात येईल.",
-      "",
-      "धन्यवाद!",
-      "स्वामी धर्मसेवा पूजा, सोलापूर"
-    ].filter(Boolean).join("\n");
-
-    // मोबाईलवरील WhatsApp ॲप थेट उघडण्यासाठी deep link वापरा
-    const whatsappUrl = "whatsapp://send?phone=" + customerPhone +
-      "&text=" + encodeURIComponent(message);
-
-    window.location.href = whatsappUrl;
-  });
-});
-    // निवडलेल्या गुरुजींना काम देणे
-    box.querySelectorAll("[data-assign-guru]").forEach(button => {
-      button.addEventListener("click", async () => {
-        try {
-          const bookingId = button.dataset.assignGuru;
-
-const assignedBooking = data.find(b => b.id === bookingId);
-
-if (!assignedBooking || assignedBooking.status === "रद्द") {
-  alert("हे बुकिंग रद्द झाले आहे. गुरुजी नेमता येणार नाहीत.");
-  return;
-}
-          
-          const select = box.querySelector(
-            `[data-guru-select="${bookingId}"]`
-          );
-
-          const selectedGuru = approvedGurus.find(
-            g => g.id === select.value
-          );
-
-          if (!selectedGuru) {
-            alert("कृपया गुरुजी निवडा.");
-            return;
-          }
-
-          await updateDoc(doc(db, "bookings", bookingId), {
-            assignedGuruId: selectedGuru.id,
-            assignedGuruName: selectedGuru.name,
-            assignedGuruPhone: selectedGuru.phone,
-            guruStatus: "काम नेमले"
+          const b = data.find(x => x.id === btn.dataset.assignGuru);
+          const sel = box.querySelector(`[data-guru-select="${btn.dataset.assignGuru}"]`);
+          const g = approvedGurus.find(x => x.id === sel?.value);
+          if (!b || b.status === "रद्द") { alert("रद्द बुकिंगसाठी गुरुजी नेमता येणार नाहीत."); return; }
+          if (!g) { alert("कृपया गुरुजी निवडा."); return; }
+          await updateDoc(doc(db,"bookings",b.id), {
+            assignedGuruId:g.id, assignedGuruName:g.name,
+            assignedGuruPhone:g.phone, guruStatus:"काम नेमले"
           });
+          const msg = "नमस्कार गुरुजी 🙏\nआपल्याला नवीन पूजा काम नेमण्यात आले आहे.\nग्राहकाचे नाव: "+(b.name||"")+"\nपूजा: "+(b.service||"")+"\nतारीख: "+(b.date||"")+"\nग्राहक मोबाईल: "+(b.phone||"")+"\nकृपया संपर्क करून कामाची खात्री करा.\nस्वामी धर्मसेवा पूजा";
+          openBookingWhatsApp(g.phone,msg);
+          await loadAdminBookings();
+        } catch(error) { alert("गुरुजी नेमताना त्रुटी: " + error.message); }
+      }));
 
-          const booking = data.find(b => b.id === bookingId);
-
-let guruPhone = String(selectedGuru.phone || "")
-  .replace(/\D/g, "");
-
-if (guruPhone.length === 10) {
-  guruPhone = "91" + guruPhone;
-}
-
-if (guruPhone.length < 12) {
-  alert("गुरुजींचा मोबाईल नंबर तपासा.");
-  return;
-}
-
-const message =
-  "नमस्कार गुरुजी 🙏\n\n" +
-  "आपल्याला नवीन पूजा काम नेमण्यात आले आहे.\n\n" +
-  "ग्राहकाचे नाव: " + (booking?.name || "") + "\n" +
-  "पूजा: " + (booking?.service || "") + "\n" +
-  "तारीख: " + (booking?.date || "") + "\n" +
-  "ग्राहक मोबाईल: " + (booking?.phone || "") + "\n\n" +
-  "कृपया संपर्क करून कामाची खात्री करा.\n\n" +
-  "स्वामी धर्मसेवा पूजा";
-
-const whatsappUrl =
-  "https://wa.me/" + guruPhone +
-  "?text=" + encodeURIComponent(message);
-
-window.open(whatsappUrl, "_blank");
-
-alert("गुरुजींना काम नेमले गेले.");
-
-await loadAdminBookings();
-
-        } catch (error) {
-          alert("त्रुटी: " + error.message);
-        }
-      });
-    });
-   
-box.querySelectorAll("[data-guru-status]").forEach(button => {
-  button.addEventListener("click", async () => {
-    try {
-      const bookingId = button.dataset.guruStatus;
-      const status = button.dataset.status;
-
-      await updateDoc(doc(db, "bookings", bookingId), {
-        guruStatus: status
-      });
-
-      alert("कामाची स्थिती सेव्ह झाली: " + status);
-
-      await loadAdminBookings();
-    } catch (error) {
-      alert("त्रुटी: " + error.message);
-    }
-  });
-});
-    
-
-  } catch (error) {
+      box.querySelectorAll("[data-guru-status]").forEach(btn => btn.addEventListener("click", async () => {
+        try {
+          await updateDoc(doc(db,"bookings",btn.dataset.guruStatus),{guruStatus:btn.dataset.status});
+          await loadAdminBookings();
+        } catch(error) { alert("कामाची स्थिती सेव्ह करताना त्रुटी: " + error.message); }
+      }));
+    };
+    [search,sort].forEach(el => { if (el) el.oninput = draw; });
+    draw();
+  } catch(error) {
     box.textContent = "बुकिंग दाखवताना त्रुटी: " + error.message;
   }
 }
-  
+
+function openBookingWhatsApp(phone, message) {
+  let number = String(phone || "").replace(/\D/g, "");
+  if (number.length === 10) number = "91" + number;
+  if (!/^91[0-9]{10}$/.test(number)) {
+    alert("मोबाईल नंबर तपासा.");
+    return;
+  }
+  window.open("https://wa.me/" + number + "?text=" + encodeURIComponent(message), "_blank");
+}
+
 async function loadAdminGurus() {
   const box = $("admin-gurus");
   box.textContent = "गुरुजींचे अर्ज लोड होत आहेत...";
@@ -528,7 +413,7 @@ async function loadAdminGurus() {
       const g = item.data();
 
       return `
-        <div class="card" style="margin-bottom:12px">
+        <div class="card guru-card ${g.status === "मंजूर" ? "guru-approved" : g.status === "नामंजूर" ? "guru-rejected" : ""}" style="margin-bottom:12px">
           <strong>${esc(g.name)}</strong><br>
           मोबाईल: ${esc(g.phone)}<br>
           शहर: ${esc(g.city)}<br>
@@ -570,60 +455,10 @@ async function loadAdminGurus() {
   
 window.approveGuru=i=>{gurus[i].status="मंजूर";save()};
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.tab).classList.add("active")}));
+function openBookingPanel(){document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));document.querySelector(".tab[data-tab=\"booking\"]").classList.add("active");$("booking").classList.add("active");$("booking").scrollIntoView({behavior:"smooth",block:"start"});}
+$("hero-booking-button").addEventListener("click",openBookingPanel);
 
 
-
-const DEFAULT_BOOKING_WHATSAPP = "8668909094";
-const ALLOWED_ADMIN_IDS = [
-  "SF0jGaa9qjcl3y0cUBhpFzu79b52",
-  "eePMp6XlyjgdpUtEcVChuqfK4yF3"
-];
-
-async function getBookingWhatsappNumber() {
-  try {
-    const settingSnap = await getDoc(doc(db, "settings", "contact"));
-    const number = settingSnap.exists() ? String(settingSnap.data().bookingWhatsappNumber || "") : "";
-    return ["8668909094", "9421075047"].includes(number) ? number : DEFAULT_BOOKING_WHATSAPP;
-  } catch (error) {
-    console.warn("Booking WhatsApp setting unavailable; using default number.", error);
-    return DEFAULT_BOOKING_WHATSAPP;
-  }
-}
-
-async function loadBookingWhatsappSetting() {
-  const message = $("booking-whatsapp-message");
-  try {
-    const number = await getBookingWhatsappNumber();
-    $("booking-whatsapp-number").value = number;
-    message.textContent = "सध्या निवडलेला नंबर: " + number;
-  } catch (error) {
-    message.textContent = "नंबर लोड करताना त्रुटी: " + error.message;
-  }
-}
-
-$("save-booking-whatsapp").addEventListener("click", async () => {
-  const message = $("booking-whatsapp-message");
-  const number = $("booking-whatsapp-number").value;
-  if (!auth.currentUser || !ALLOWED_ADMIN_IDS.includes(auth.currentUser.uid)) {
-    message.textContent = "हा बदल करण्यासाठी अधिकृत Admin लॉगिन आवश्यक आहे.";
-    return;
-  }
-  if (!["8668909094", "9421075047"].includes(number)) {
-    message.textContent = "कृपया योग्य नंबर निवडा.";
-    return;
-  }
-  const button = $("save-booking-whatsapp");
-  button.disabled = true;
-  message.textContent = "नंबर सेव्ह होत आहे...";
-  try {
-    await setDoc(doc(db, "settings", "contact"), { bookingWhatsappNumber: number });
-    message.textContent = "बुकिंग WhatsApp नंबर सेव्ह झाला: " + number;
-  } catch (error) {
-    message.textContent = "नंबर सेव्ह करताना त्रुटी: " + error.message + "\nFirestore Rules अपडेट केले आहेत का ते तपासा.";
-  } finally {
-    button.disabled = false;
-  }
-});
 
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
@@ -663,9 +498,17 @@ $("bookingform").addEventListener("submit", async e => {
 
     e.target.reset();
 
-    const bookingWhatsappNumber = await getBookingWhatsappNumber();
+    let selectedBookingNumber = "8668909094";
+    try {
+      const settingSnap = await getDoc(doc(db, "settings", "contact"));
+      if (settingSnap.exists() && ["8668909094","9421075047"].includes(settingSnap.data().bookingWhatsappNumber)) {
+        selectedBookingNumber = settingSnap.data().bookingWhatsappNumber;
+      }
+    } catch (settingError) {
+      console.warn("WhatsApp नंबर सेटिंग वाचता आली नाही; default नंबर वापरत आहोत.", settingError);
+    }
     const whatsappURL =
-      "https://wa.me/91" + bookingWhatsappNumber + "?text=" +
+      "https://wa.me/91" + selectedBookingNumber + "?text=" +
       encodeURIComponent(message);
 
     window.location.href = whatsappURL;
@@ -707,6 +550,27 @@ $("guruform").addEventListener("submit", async e => {
   }
 });
   
+
+async function loadBookingContactSetting() {
+  try {
+    const snap = await getDoc(doc(db, "settings", "contact"));
+    const number = snap.exists() ? snap.data().bookingWhatsappNumber : "8668909094";
+    $("booking-whatsapp-number").value = ["8668909094","9421075047"].includes(number) ? number : "8668909094";
+  } catch (error) {
+    $("contact-setting-message").textContent = "नंबर सेटिंग वाचता आली नाही: " + error.message;
+  }
+}
+$("save-booking-whatsapp").addEventListener("click", async () => {
+  const number = $("booking-whatsapp-number").value;
+  if (!["8668909094","9421075047"].includes(number)) return;
+  try {
+    await setDoc(doc(db,"settings","contact"), {bookingWhatsappNumber:number}, {merge:true});
+    $("contact-setting-message").textContent = "बुकिंग WhatsApp नंबर सेव्ह झाला.";
+  } catch(error) {
+    $("contact-setting-message").textContent = "सेव्ह करताना त्रुटी: " + error.message;
+  }
+});
+
 renderServices();
 render();
 $("admin-login").addEventListener("click", async () => {
@@ -717,17 +581,16 @@ $("admin-login").addEventListener("click", async () => {
 
   try {
     const credential = await signInWithEmailAndPassword(auth, email, password);
-
-    if (!ALLOWED_ADMIN_IDS.includes(credential.user.uid)) {
+    const allowedAdminIds = ["SF0jGaa9qjcl3y0cUBhpFzu79b52","eePMp6XlyjgdpUtEcVChuqfK4yF3"];
+    if (!allowedAdminIds.includes(credential.user.uid)) {
       await signOut(auth);
       throw new Error("या खात्याला Admin परवानगी नाही.");
     }
-
     $("admin-message").textContent = "लॉगिन यशस्वी झाले!";
     $("admin-logout").style.display = "inline-block";
     $("admin-data").style.display = "block";
 
-    await loadBookingWhatsappSetting();
+    await loadBookingContactSetting();
     await loadAdminBookings();
     await loadAdminGurus();
 
@@ -742,7 +605,12 @@ async function downloadFirestoreBackup(collectionName, filePrefix, buttonId) {
   const message = $("backup-message");
   const button = $(buttonId);
 
-  if (!auth.currentUser || !ALLOWED_ADMIN_IDS.includes(auth.currentUser.uid)) {
+  const allowedAdminIds = [
+    "SF0jGaa9qjcl3y0cUBhpFzu79b52",
+    "eePMp6XlyjgdpUtEcVChuqfK4yF3"
+  ];
+
+  if (!auth.currentUser || !allowedAdminIds.includes(auth.currentUser.uid)) {
     message.textContent = "बॅकअपसाठी अधिकृत Admin लॉगिन आवश्यक आहे.";
     return;
   }
@@ -800,7 +668,6 @@ $("admin-logout").addEventListener("click", async () => {
   await signOut(auth);
   $("admin-data").style.display = "none";
   $("admin-logout").style.display = "none";
-  $("admin-password").value = "";
   $("admin-message").textContent = "लॉगआउट झाले.";
 });
 </script>
