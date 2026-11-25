@@ -499,6 +499,10 @@ $("hero-booking-button").addEventListener("click",openBookingPanel);
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
 
+  // मोबाईलवरील Chrome मध्ये Firebase save होईपर्यंत user gesture हरवू नये
+  // म्हणून WhatsApp साठी नवीन टॅब लगेच उघडला जातो.
+  const whatsappTab = window.open("about:blank", "_blank");
+
   $("booking-result").textContent =
     "बुकिंग प्रक्रिया सुरू झाली...";
 
@@ -543,13 +547,20 @@ $("bookingform").addEventListener("submit", async e => {
     } catch (settingError) {
       console.warn("WhatsApp नंबर सेटिंग वाचता आली नाही; default नंबर वापरत आहोत.", settingError);
     }
+    // api.whatsapp.com Android वर installed WhatsApp app कडे handoff करते.
     const whatsappURL =
-      "https://wa.me/91" + selectedBookingNumber + "?text=" +
-      encodeURIComponent(message);
+      "https://api.whatsapp.com/send?phone=91" + selectedBookingNumber +
+      "&text=" + encodeURIComponent(message);
 
-    window.location.href = whatsappURL;
+    if (whatsappTab && !whatsappTab.closed) {
+      whatsappTab.location.href = whatsappURL;
+    } else {
+      // Popup block झाल्यास त्याच पेजवरून WhatsApp उघडण्याचा पर्याय.
+      window.location.href = whatsappURL;
+    }
 
   } catch (error) {
+    if (whatsappTab && !whatsappTab.closed) whatsappTab.close();
     console.error(error);
 
     $("booking-result").textContent =
