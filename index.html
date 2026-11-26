@@ -499,12 +499,8 @@ $("hero-booking-button").addEventListener("click",openBookingPanel);
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
 
-  // मोबाईलवरील Chrome मध्ये Firebase save होईपर्यंत user gesture हरवू नये
-  // म्हणून WhatsApp साठी नवीन टॅब लगेच उघडला जातो.
-  const whatsappTab = window.open("about:blank", "_blank");
-
-  $("booking-result").textContent =
-    "बुकिंग प्रक्रिया सुरू झाली...";
+  const resultBox = $("booking-result");
+  resultBox.textContent = "बुकिंग सेव्ह होत आहे...";
 
   const d = Object.fromEntries(new FormData(e.target));
 
@@ -533,39 +529,54 @@ $("bookingform").addEventListener("submit", async e => {
       "पत्ता: " + (d.address || "दिलेला नाही") + "\n" +
       "अधिक माहिती: " + (d.notes || "नाही");
 
-    $("booking-result").textContent =
-      "बुकिंग Firebase मध्ये सेव्ह झाले. WhatsApp उघडत आहे.";
-
-    e.target.reset();
-
     let selectedBookingNumber = "8668909094";
     try {
       const settingSnap = await getDoc(doc(db, "settings", "contact"));
-      if (settingSnap.exists() && ["8668909094","9421075047"].includes(settingSnap.data().bookingWhatsappNumber)) {
+      if (settingSnap.exists() &&
+          ["8668909094", "9421075047"].includes(settingSnap.data().bookingWhatsappNumber)) {
         selectedBookingNumber = settingSnap.data().bookingWhatsappNumber;
       }
     } catch (settingError) {
       console.warn("WhatsApp नंबर सेटिंग वाचता आली नाही; default नंबर वापरत आहोत.", settingError);
     }
-    // WhatsApp चे वेबपेज न उघडता Android वरील installed app थेट उघडण्याचा प्रयत्न.
-    // whatsapp:// scheme मुळे "Open app / Download" landing page टाळता येतो.
-    const whatsappURL =
-      "whatsapp://send?phone=91" + selectedBookingNumber +
-      "&text=" + encodeURIComponent(message);
 
-    if (whatsappTab && !whatsappTab.closed) {
-      whatsappTab.location.href = whatsappURL;
-    } else {
-      // नवीन टॅब उपलब्ध नसल्यास त्याच पेजवरून थेट WhatsApp app उघडा.
-      window.location.href = whatsappURL;
-    }
+    e.target.reset();
+    resultBox.replaceChildren();
+
+    const successText = document.createElement("p");
+    successText.textContent = "✅ बुकिंग यशस्वीरीत्या सेव्ह झाले आहे. आता खालील बटण दाबून WhatsApp संदेश पाठवा.";
+    resultBox.appendChild(successText);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const sendButton = document.createElement("button");
+    sendButton.type = "button";
+    sendButton.className = "primary";
+    sendButton.textContent = "📲 WhatsApp संदेश पाठवा";
+    sendButton.addEventListener("click", () => {
+      const appURL = "whatsapp://send?phone=91" + selectedBookingNumber +
+        "&text=" + encodeURIComponent(message);
+      window.location.href = appURL;
+    });
+    actions.appendChild(sendButton);
+
+    const fallbackLink = document.createElement("a");
+    fallbackLink.className = "secondary";
+    fallbackLink.style.textDecoration = "none";
+    fallbackLink.href = "https://wa.me/91" + selectedBookingNumber +
+      "?text=" + encodeURIComponent(message);
+    fallbackLink.target = "_blank";
+    fallbackLink.rel = "noopener noreferrer";
+    fallbackLink.textContent = "WhatsApp वेब पर्याय";
+    actions.appendChild(fallbackLink);
+
+    resultBox.appendChild(actions);
 
   } catch (error) {
-    if (whatsappTab && !whatsappTab.closed) whatsappTab.close();
     console.error(error);
-
-    $("booking-result").textContent =
-      "Error: " + error.code + " - " + error.message;
+    resultBox.textContent =
+      "बुकिंग सेव्ह झाली नाही: " + error.code + " - " + error.message;
   }
 });
 
