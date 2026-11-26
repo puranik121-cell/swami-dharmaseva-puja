@@ -547,15 +547,16 @@ $("bookingform").addEventListener("submit", async e => {
     } catch (settingError) {
       console.warn("WhatsApp नंबर सेटिंग वाचता आली नाही; default नंबर वापरत आहोत.", settingError);
     }
-    // api.whatsapp.com Android वर installed WhatsApp app कडे handoff करते.
+    // WhatsApp चे वेबपेज न उघडता Android वरील installed app थेट उघडण्याचा प्रयत्न.
+    // whatsapp:// scheme मुळे "Open app / Download" landing page टाळता येतो.
     const whatsappURL =
-      "https://api.whatsapp.com/send?phone=91" + selectedBookingNumber +
+      "whatsapp://send?phone=91" + selectedBookingNumber +
       "&text=" + encodeURIComponent(message);
 
     if (whatsappTab && !whatsappTab.closed) {
       whatsappTab.location.href = whatsappURL;
     } else {
-      // Popup block झाल्यास त्याच पेजवरून WhatsApp उघडण्याचा पर्याय.
+      // नवीन टॅब उपलब्ध नसल्यास त्याच पेजवरून थेट WhatsApp app उघडा.
       window.location.href = whatsappURL;
     }
 
