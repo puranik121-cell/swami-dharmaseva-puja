@@ -489,7 +489,10 @@ function openBookingWhatsApp(phone, message) {
     alert("मोबाईल नंबर तपासा.");
     return;
   }
-  window.open("https://wa.me/" + number + "?text=" + encodeURIComponent(message), "_blank");
+  // Android वर WhatsApp ॲप थेट उघडण्यासाठी deep link वापरा.
+  const text = encodeURIComponent(message);
+  const whatsappURL = "whatsapp://send?phone=" + number + "&text=" + text;
+  window.location.href = whatsappURL;
 }
 
 async function loadAdminGurus() {
@@ -583,10 +586,6 @@ $("hero-booking-button").addEventListener("click",openBookingPanel);
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
 
-  // मोबाईलवरील Chrome मध्ये Firebase save होईपर्यंत user gesture हरवू नये
-  // म्हणून WhatsApp साठी नवीन टॅब लगेच उघडला जातो.
-  const whatsappTab = window.open("about:blank", "_blank");
-
   $("booking-result").textContent =
     "बुकिंग प्रक्रिया सुरू झाली...";
 
@@ -632,20 +631,13 @@ $("bookingform").addEventListener("submit", async e => {
     } catch (settingError) {
       console.warn("WhatsApp नंबर सेटिंग वाचता आली नाही; default नंबर वापरत आहोत.", settingError);
     }
-    // api.whatsapp.com Android वर installed WhatsApp app कडे handoff करते.
+    // Android WhatsApp ॲप थेट उघडा; about:blank किंवा api.whatsapp पेज नको.
     const whatsappURL =
-      "https://api.whatsapp.com/send?phone=91" + selectedBookingNumber +
+      "whatsapp://send?phone=91" + selectedBookingNumber +
       "&text=" + encodeURIComponent(message);
-
-    if (whatsappTab && !whatsappTab.closed) {
-      whatsappTab.location.href = whatsappURL;
-    } else {
-      // Popup block झाल्यास त्याच पेजवरून WhatsApp उघडण्याचा पर्याय.
-      window.location.href = whatsappURL;
-    }
+    window.location.href = whatsappURL;
 
   } catch (error) {
-    if (whatsappTab && !whatsappTab.closed) whatsappTab.close();
     console.error(error);
 
     $("booking-result").textContent =
