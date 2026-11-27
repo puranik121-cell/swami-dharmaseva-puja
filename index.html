@@ -48,6 +48,11 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
  .booking-actions button{flex:1 1 145px}
 }
 
+
+/* Financial reports, schedule and restore tools */
+.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}.report-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px}.report-card b{display:block;color:var(--green);font-size:21px}.report-controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.report-controls>*{flex:1 1 160px}.mini-table{overflow:auto;margin:10px 0}.mini-table table{min-width:520px}.finance-line{font-size:13px;color:var(--muted);margin:8px 0}.danger-btn{background:#fff0f0!important;color:#a32323!important;border:1px solid #efcaca!important}
+@media(max-width:650px){.report-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -113,6 +118,16 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
       <button class="secondary" id="backup-gurus">गुरुजी बॅकअप डाउनलोड</button>
     </div>
     <p id="backup-message" aria-live="polite"></p>
+    <div class="actions">
+      <button class="primary" id="backup-all">संपूर्ण डेटा बॅकअप (JSON)</button>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <strong>JSON बॅकअपमधून डेटा परत आणा</strong>
+      <p class="finance-line">फक्त या वेबसाइटमधून घेतलेली bookings/gurus JSON बॅकअप फाईल निवडा. आधीचा डेटा आपोआप डिलीट होणार नाही; समान ID असलेली नोंद अपडेट होईल.</p>
+      <input type="file" id="restore-json" accept=".json,application/json">
+      <button class="secondary" id="restore-json-button" type="button" style="margin-top:10px">बॅकअप पुनर्संचयित करा</button>
+      <p id="restore-message" aria-live="polite"></p>
+    </div>
 
     <h2 class="section-title">बुकिंग WhatsApp नंबर</h2>
     <div class="card">
@@ -127,6 +142,18 @@ footer{text-align:center;color:#758078;font-size:12px;padding:28px 15px}
       <div class="actions"><button class="primary" id="save-booking-whatsapp">नंबर सेव्ह करा</button></div>
       <p id="contact-setting-message" aria-live="polite"></p>
     </div>
+
+    <h2 class="section-title">मासिक आणि वार्षिक आर्थिक रिपोर्ट</h2>
+    <div class="card">
+      <div class="report-controls"><label>महिना <input type="month" id="report-month"></label><label>वर्ष <input type="number" id="report-year" min="2000" max="2100"></label></div>
+      <div class="report-grid"><div class="report-card"><span>एकूण पूजा शुल्क</span><b id="month-fee">₹0</b></div><div class="report-card"><span>जमा रक्कम</span><b id="month-paid">₹0</b></div><div class="report-card"><span>बाकी रक्कम</span><b id="month-balance">₹0</b></div></div>
+      <p id="month-count" class="finance-line"></p>
+      <div class="report-grid"><div class="report-card"><span>वार्षिक पूजा शुल्क</span><b id="year-fee">₹0</b></div><div class="report-card"><span>वार्षिक जमा</span><b id="year-paid">₹0</b></div><div class="report-card"><span>वार्षिक बाकी</span><b id="year-balance">₹0</b></div></div>
+      <p id="year-count" class="finance-line"></p>
+      <div id="service-report" class="mini-table"></div>
+    </div>
+    <h2 class="section-title">दैनिक पूजा वेळापत्रक</h2>
+    <div class="card"><label>तारीख निवडा <input type="date" id="schedule-date"></label><div id="daily-schedule" style="margin-top:12px"></div></div>
 
     <h2 class="section-title">ग्राहक बुकिंग नोंदी</h2>
     <div class="stats">
@@ -294,6 +321,8 @@ async function loadAdminBookings() {
             <div><span>वेळ</span><br><strong>${esc(b.time || "दिलेली नाही")}</strong></div>
             <div><span>शहर / गाव</span><br><strong>${esc(b.city || "—")}</strong></div>
             <div><span>गुरुजी</span><br><strong>${esc(b.assignedGuruName || "नियुक्त नाही")}</strong></div>
+            <div><span>पूजा शुल्क</span><br><strong>₹${Number(b.totalFee||0).toLocaleString('en-IN')}</strong></div>
+            <div><span>जमा / बाकी</span><br><strong>₹${Number(b.paidAmount||0).toLocaleString('en-IN')} / ₹${Math.max(0,Number(b.totalFee||0)-Number(b.paidAmount||0)).toLocaleString('en-IN')}</strong></div>
           </div>
           ${b.status !== "रद्द" ? `
             <div class="field" style="margin-top:12px">
@@ -305,6 +334,8 @@ async function loadAdminBookings() {
             </div>` : ""}
           ${b.assignedGuruId ? `<p style="margin:9px 0 0"><span>गुरुजींच्या कामाची स्थिती:</span> <span class="status-pill ${guruStatusClass}">${esc(b.guruStatus || "काम नेमले")}</span></p>` : ""}
           <div class="booking-actions">
+            <button class="secondary" data-edit-booking="${b.id}">बुकिंग एडिट / शुल्क भरा</button>
+            <button class="secondary danger-btn" data-delete-booking="${b.id}">बुकिंग डिलीट</button>
             ${b.status === "प्रलंबित" ? `<button class="primary" data-booking-id="${b.id}">बुकिंग निश्चित करा</button>` : ""}
             ${b.status !== "रद्द" ? `<button class="secondary" data-cancel-booking="${b.id}">बुकिंग रद्द करा</button>` : ""}
             ${b.status === "निश्चित" ? `<button class="secondary" data-customer-whatsapp="${b.id}">ग्राहकाला निश्चिती संदेश</button>` : ""}
@@ -328,6 +359,32 @@ async function loadAdminBookings() {
       pendingBox.innerHTML = renderCards(pending);
       confirmedBox.innerHTML = renderCards(confirmed);
       cancelledBox.innerHTML = renderCards(cancelled);
+
+      box.querySelectorAll("[data-edit-booking]").forEach(btn => btn.addEventListener("click", async () => {
+        if (!isAuthorizedAdmin()) { alert("अधिकृत Admin लॉगिन आवश्यक आहे."); return; }
+        const b = data.find(x => x.id === btn.dataset.editBooking); if (!b) return;
+        const name = prompt("ग्राहकाचे नाव", b.name || ""); if (name === null) return;
+        const phone = prompt("मोबाईल नंबर", b.phone || ""); if (phone === null) return;
+        const service = prompt("पूजा / विधी", b.service || ""); if (service === null) return;
+        const date = prompt("पूजेची तारीख (YYYY-MM-DD)", b.date || ""); if (date === null) return;
+        const time = prompt("वेळ (HH:MM किंवा रिकामी)", b.time || ""); if (time === null) return;
+        const city = prompt("शहर / गाव", b.city || ""); if (city === null) return;
+        const address = prompt("पूर्ण पत्ता", b.address || ""); if (address === null) return;
+        const notes = prompt("अतिरिक्त माहिती", b.notes || ""); if (notes === null) return;
+        const oldFee = Number(b.totalFee || 0), oldPaid = Number(b.paidAmount || 0);
+        const feeText = prompt("एकूण पूजा शुल्क (रुपये)", String(oldFee)); if (feeText === null) return;
+        const paidText = prompt("आतापर्यंत मिळालेले पैसे (रुपये)", String(oldPaid)); if (paidText === null) return;
+        const totalFee = Number(feeText), paidAmount = Number(paidText);
+        if (![totalFee,paidAmount].every(Number.isFinite) || totalFee < 0 || paidAmount < 0 || paidAmount > totalFee) { alert("रक्कम योग्य भरा. जमा रक्कम एकूण शुल्कापेक्षा जास्त नसावी."); return; }
+        if (!name.trim() || !phone.trim() || !service.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(date.trim())) { alert("नाव, मोबाईल, पूजा आणि तारीख तपासा."); return; }
+        try { await updateDoc(doc(db,"bookings",b.id), {name:name.trim(),phone:phone.trim(),service:service.trim(),date:date.trim(),time:time.trim(),city:city.trim(),address,notes,totalFee,paidAmount,balance:totalFee-paidAmount,updated:new Date().toISOString()}); await loadAdminBookings(); alert("बुकिंग आणि रक्कम सेव्ह झाली."); } catch(err) { alert("एडिट सेव्ह झाले नाही: "+err.message); }
+      }));
+      box.querySelectorAll("[data-delete-booking]").forEach(btn => btn.addEventListener("click", async () => {
+        if (!isAuthorizedAdmin()) { alert("अधिकृत Admin लॉगिन आवश्यक आहे."); return; }
+        const b = data.find(x => x.id === btn.dataset.deleteBooking); if (!b) return;
+        if (!confirm((b.name||"ही")+" यांची बुकिंग कायमची डिलीट करायची का? ही कृती परत करता येणार नाही.")) return;
+        try { await deleteDoc(doc(db,"bookings",b.id)); await loadAdminBookings(); alert("बुकिंग डिलीट झाली."); } catch(err) { alert("बुकिंग डिलीट झाली नाही: "+err.message); }
+      }));
 
       box.querySelectorAll("[data-booking-id]").forEach(btn => btn.addEventListener("click", async () => {
         try {
@@ -389,6 +446,7 @@ async function loadAdminBookings() {
     };
     [search,sort].forEach(el => { if (el) el.oninput = draw; });
     draw();
+    renderReportsAndSchedule(data);
   } catch(error) {
     console.error("बुकिंग दाखवताना त्रुटी:", error);
     const message = "बुकिंग दाखवताना त्रुटी: " + (error.message || "अज्ञात त्रुटी");
@@ -396,6 +454,32 @@ async function loadAdminBookings() {
     confirmedBox.textContent = message;
     cancelledBox.textContent = message;
   }
+}
+
+function isAuthorizedAdmin() {
+  return !!auth.currentUser && ["SF0jGaa9qjcl3y0cUBhpFzu79b52","eePMp6XlyjgdpUtEcVChuqfK4yF3"].includes(auth.currentUser.uid);
+}
+function renderReportsAndSchedule(data) {
+  const now = new Date();
+  const monthInput = $("report-month"), yearInput = $("report-year"), dateInput = $("schedule-date");
+  if (!monthInput.value) monthInput.value = now.toISOString().slice(0,7);
+  if (!yearInput.value) yearInput.value = String(now.getFullYear());
+  if (!dateInput.value) dateInput.value = now.toISOString().slice(0,10);
+  const totals = rows => rows.reduce((a,b) => { const fee=Math.max(0,Number(b.totalFee||0)); const paid=Math.min(fee,Math.max(0,Number(b.paidAmount||0))); a.fee+=fee; a.paid+=paid; a.balance+=fee-paid; return a; },{fee:0,paid:0,balance:0});
+  const money = n => "₹"+Number(n||0).toLocaleString("en-IN");
+  const update = () => {
+    const m=monthInput.value, y=String(yearInput.value||"");
+    const monthAll=data.filter(b=>String(b.date||"").startsWith(m)); const yearAll=data.filter(b=>String(b.date||"").startsWith(y+"-"));
+    const monthRows=monthAll.filter(b=>b.status!=="रद्द"), yearRows=yearAll.filter(b=>b.status!=="रद्द");
+    const mt=totals(monthRows), yt=totals(yearRows);
+    $("month-fee").textContent=money(mt.fee); $("month-paid").textContent=money(mt.paid); $("month-balance").textContent=money(mt.balance); $("month-count").textContent=`या महिन्यातील सक्रिय बुकिंग: ${monthRows.length} | रद्द: ${monthAll.length-monthRows.length}`;
+    $("year-fee").textContent=money(yt.fee); $("year-paid").textContent=money(yt.paid); $("year-balance").textContent=money(yt.balance); $("year-count").textContent=`या वर्षातील सक्रिय बुकिंग: ${yearRows.length} | रद्द: ${yearAll.length-yearRows.length}`;
+    const byService={}; monthRows.forEach(b=>{const k=b.service||"इतर";byService[k]=(byService[k]||0)+1;});
+    $("service-report").innerHTML=Object.keys(byService).length?`<table><thead><tr><th>या महिन्यातील पूजा</th><th>बुकिंग संख्या</th></tr></thead><tbody>${Object.entries(byService).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join("")}</tbody></table>`:"या महिन्यात नोंदी नाहीत.";
+    const dayRows=data.filter(b=>b.date===dateInput.value).sort((a,b)=>String(a.time||"99:99").localeCompare(String(b.time||"99:99")));
+    $("daily-schedule").innerHTML=dayRows.length?dayRows.map(b=>`<div class="booking-card" style="margin-bottom:9px"><strong>${esc(b.time||"वेळ दिलेली नाही")} — ${esc(b.name||"")}</strong><br>पूजा: ${esc(b.service||"")}<br>मोबाईल: ${esc(b.phone||"")}<br>गाव: ${esc(b.city||"")}<br>स्थिती: ${esc(b.status||"प्रलंबित")}</div>`).join(""):"या तारखेला पूजा बुकिंग नाही.";
+  };
+  [monthInput,yearInput,dateInput].forEach(el=>el.onchange=update); update();
 }
 
 function openBookingWhatsApp(phone, message) {
@@ -499,8 +583,12 @@ $("hero-booking-button").addEventListener("click",openBookingPanel);
 $("bookingform").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const resultBox = $("booking-result");
-  resultBox.textContent = "बुकिंग सेव्ह होत आहे...";
+  // मोबाईलवरील Chrome मध्ये Firebase save होईपर्यंत user gesture हरवू नये
+  // म्हणून WhatsApp साठी नवीन टॅब लगेच उघडला जातो.
+  const whatsappTab = window.open("about:blank", "_blank");
+
+  $("booking-result").textContent =
+    "बुकिंग प्रक्रिया सुरू झाली...";
 
   const d = Object.fromEntries(new FormData(e.target));
 
@@ -508,6 +596,7 @@ $("bookingform").addEventListener("submit", async e => {
     await addDoc(collection(db, "bookings"), {
       ...d,
       status: "प्रलंबित",
+      totalFee: 0, paidAmount: 0, balance: 0,
       created: new Date().toISOString()
     });
 
@@ -529,54 +618,38 @@ $("bookingform").addEventListener("submit", async e => {
       "पत्ता: " + (d.address || "दिलेला नाही") + "\n" +
       "अधिक माहिती: " + (d.notes || "नाही");
 
+    $("booking-result").textContent =
+      "बुकिंग Firebase मध्ये सेव्ह झाले. WhatsApp उघडत आहे.";
+
+    e.target.reset();
+
     let selectedBookingNumber = "8668909094";
     try {
       const settingSnap = await getDoc(doc(db, "settings", "contact"));
-      if (settingSnap.exists() &&
-          ["8668909094", "9421075047"].includes(settingSnap.data().bookingWhatsappNumber)) {
+      if (settingSnap.exists() && ["8668909094","9421075047"].includes(settingSnap.data().bookingWhatsappNumber)) {
         selectedBookingNumber = settingSnap.data().bookingWhatsappNumber;
       }
     } catch (settingError) {
       console.warn("WhatsApp नंबर सेटिंग वाचता आली नाही; default नंबर वापरत आहोत.", settingError);
     }
+    // api.whatsapp.com Android वर installed WhatsApp app कडे handoff करते.
+    const whatsappURL =
+      "https://api.whatsapp.com/send?phone=91" + selectedBookingNumber +
+      "&text=" + encodeURIComponent(message);
 
-    e.target.reset();
-    resultBox.replaceChildren();
-
-    const successText = document.createElement("p");
-    successText.textContent = "✅ बुकिंग यशस्वीरीत्या सेव्ह झाले आहे. आता खालील बटण दाबून WhatsApp संदेश पाठवा.";
-    resultBox.appendChild(successText);
-
-    const actions = document.createElement("div");
-    actions.className = "actions";
-
-    const sendButton = document.createElement("button");
-    sendButton.type = "button";
-    sendButton.className = "primary";
-    sendButton.textContent = "📲 WhatsApp संदेश पाठवा";
-    sendButton.addEventListener("click", () => {
-      const appURL = "whatsapp://send?phone=91" + selectedBookingNumber +
-        "&text=" + encodeURIComponent(message);
-      window.location.href = appURL;
-    });
-    actions.appendChild(sendButton);
-
-    const fallbackLink = document.createElement("a");
-    fallbackLink.className = "secondary";
-    fallbackLink.style.textDecoration = "none";
-    fallbackLink.href = "https://wa.me/91" + selectedBookingNumber +
-      "?text=" + encodeURIComponent(message);
-    fallbackLink.target = "_blank";
-    fallbackLink.rel = "noopener noreferrer";
-    fallbackLink.textContent = "WhatsApp वेब पर्याय";
-    actions.appendChild(fallbackLink);
-
-    resultBox.appendChild(actions);
+    if (whatsappTab && !whatsappTab.closed) {
+      whatsappTab.location.href = whatsappURL;
+    } else {
+      // Popup block झाल्यास त्याच पेजवरून WhatsApp उघडण्याचा पर्याय.
+      window.location.href = whatsappURL;
+    }
 
   } catch (error) {
+    if (whatsappTab && !whatsappTab.closed) whatsappTab.close();
     console.error(error);
-    resultBox.textContent =
-      "बुकिंग सेव्ह झाली नाही: " + error.code + " - " + error.message;
+
+    $("booking-result").textContent =
+      "Error: " + error.code + " - " + error.message;
   }
 });
 
@@ -620,6 +693,7 @@ async function loadBookingContactSetting() {
   }
 }
 $("save-booking-whatsapp").addEventListener("click", async () => {
+  if (!isAuthorizedAdmin()) { alert("अधिकृत Admin लॉगिन आवश्यक आहे."); return; }
   const number = $("booking-whatsapp-number").value;
   if (!["8668909094","9421075047"].includes(number)) return;
   try {
@@ -721,6 +795,29 @@ $("backup-bookings").addEventListener("click", () => {
 
 $("backup-gurus").addEventListener("click", () => {
   downloadFirestoreBackup("gurus", "swami-gurus-backup", "backup-gurus");
+});
+
+async function downloadFullBackup() {
+  if (!isAuthorizedAdmin()) { alert("अधिकृत Admin लॉगिन आवश्यक आहे."); return; }
+  const msg=$("backup-message"); msg.textContent="संपूर्ण बॅकअप तयार होत आहे...";
+  try {
+    const [bs,gs]=await Promise.all([getDocs(collection(db,"bookings")),getDocs(collection(db,"gurus"))]);
+    const payload={app:"swami-dharmaseva-puja",version:1,exportedAt:new Date().toISOString(),bookings:bs.docs.map(x=>({id:x.id,...x.data()})),gurus:gs.docs.map(x=>({id:x.id,...x.data()}))};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="swami-dharmaseva-full-backup-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500); msg.textContent=`पूर्ण बॅकअप तयार: ${payload.bookings.length} बुकिंग आणि ${payload.gurus.length} गुरुजी नोंदी.`;
+  } catch(e) { msg.textContent="बॅकअप त्रुटी: "+e.message; }
+}
+$("backup-all").addEventListener("click",downloadFullBackup);
+$("restore-json-button").addEventListener("click",async()=>{
+  if (!isAuthorizedAdmin()) { alert("अधिकृत Admin लॉगिन आवश्यक आहे."); return; }
+  const file=$("restore-json").files?.[0], msg=$("restore-message"); if(!file){msg.textContent="आधी JSON बॅकअप फाईल निवडा.";return;}
+  if(!confirm("या JSON मधील नोंदी Firebase मध्ये आयात करायच्या आहेत का? समान ID असलेल्या नोंदी अपडेट होतील.")) return;
+  try {
+    const payload=JSON.parse(await file.text());
+    const groups=[ ["bookings",payload.bookings || (payload.collection==="bookings"?payload.records:[])], ["gurus",payload.gurus || (payload.collection==="gurus"?payload.records:[])] ];
+    let count=0;
+    for(const [collectionName,records] of groups){ if(!Array.isArray(records)) continue; for(const record of records){ if(!record || typeof record.id!=="string" || !record.id.trim()) continue; const data={...record}; delete data.id; await setDoc(doc(db,collectionName,record.id),data,{merge:true}); count++; } }
+    msg.textContent=`पुनर्संचयित पूर्ण. ${count} नोंदी आयात केल्या.`; await loadAdminBookings(); await loadAdminGurus();
+  } catch(e){ msg.textContent="JSON आयात अयशस्वी: "+e.message; }
 });
 
 $("admin-logout").addEventListener("click", async () => {
